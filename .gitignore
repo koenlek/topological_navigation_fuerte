@@ -1,0 +1,17 @@
+*~
+cmake_install.cmake
+
+#ignore all . files/folders, except .gitignore itself.
+.*
+!.gitignore
+
+setup.*
+
+srv_gen
+msg_gen
+build
+bin
+lib
+_gtest_from_src
+
+graph_mapping/laser_slam/data

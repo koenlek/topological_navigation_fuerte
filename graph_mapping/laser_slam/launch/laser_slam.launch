@@ -1,0 +1,75 @@
+<!--
+Bring up laser slam node and warehouse.
+Assumes scans come in on the base_scan topic, and that there is a
+fixed frame called odom_combined.
+
+Launch arguments:
+- db_location.  Where the db is stored. Defaults to $(find laser_slam)/data.
+- overwrite_existing.  Whether to overwrite existing db.  Default is false.
+
+-->
+
+
+<launch>
+
+  <arg name="db_location" default="$(find laser_slam)/data"/>
+  <arg name="overwrite_existing" default="false"/>
+  
+  <!--
+  <node pkg="laser_slam" type="top_graph.py" name="top_graph"
+        args="laser_slam_node" output="screen" />
+  -->
+
+  <node name="mongo" type="wrapper.py" pkg="mongodb">
+    <param name="overwrite" value="true"/>
+    <param name="database_path" value="$(arg db_location)"/>
+  </node>
+
+  <remap from="scan" to="base_scan" />
+  <remap from="cloud" to="combined_cloud" />
+
+  <node pkg="laser_slam" type="laser_slam_node" name="laser_slam_node" output="screen">
+
+    <param name="optimization_frame" value="graph_optimization"/>
+    <remap from="initialpose" to="stage_init_pose"/>
+
+    <param name="add_new_nodes" value="true"/>
+    
+    <param name="position_displacement_threshold" value="0.5" />
+    <param name="angle_displacement_threshold" value="0.5" />
+    
+    <param name="fixed_frame" value="odom_combined"/>
+    <param name="base_frame" value="base_footprint"/>
+    <param name="laser_frame" value="base_laser_link"/>
+
+    <param name="min_unseen_proportion" value="0.15"/>
+    
+    <param name="scan_time_tolerance" value="0.1"/>
+
+    <param name="grid_resolution" value="0.025" />
+    <param name="visualization_rate" value="0.3" />
+
+    <param name="match_radius" value="0.52"/>
+    <param name="match_resolution" value="0.02"/>
+
+    <param name="grid_pub_rate" value="0.3"/>
+    <param name="scan_match_proportion" value="0.2"/>
+
+    <param name="cleanup_grid" value="true"/>
+
+    <param name="running_scan_match_size" value="0.5"/>
+
+    <param name="robot_radius" value="0.3"/>
+
+    <!-- Debug -->
+    <param name="visualize_node_ids" value="true"/>
+    
+  </node>
+
+  <node pkg="laser_slam" type="cloud_snapshotter" name="cloud_snapshotter" output="screen"/>
+
+  <node pkg="laser_slam" type="scan_match_constraint_generator" name="constraint_generator" output="screen"/>
+
+  <node pkg="laser_slam" type="scan_match_localizer" name="scan_match_localizer" output="screen"/>
+
+</launch>

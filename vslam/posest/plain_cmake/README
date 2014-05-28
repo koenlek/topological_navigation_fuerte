@@ -1,0 +1,2 @@
+This compiles a subset of posest. However, all files which depends on
+external libraries such as PCL or TBB are not included.

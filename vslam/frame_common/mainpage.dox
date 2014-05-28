@@ -1,0 +1,37 @@
+/**
+\mainpage
+\htmlinclude manifest.html
+
+\b frame_common is a package containing the definition for the 
+frame_common::Frame class, used in vslam_system for storing feature information
+for visual odometry.
+
+<!-- 
+Provide an overview of your package.
+-->
+
+
+\section codeapi Code API
+
+The two classes of interest are frame_common::Frame and frame_common::FrameProc.
+
+frame_common::Frame contains the image and image features.
+
+frame_common::FrameProc is the class that contains a feature detector
+(FrameProc::detector) and extractor (FrameProc::extractor). This class is used
+for filling in the Frame class from a monocular image or from a stereo pair of
+images.
+
+<!--
+Provide links to specific auto-generated API documentation within your
+package that is of particular interest to a reader. Doxygen will
+document pretty much every part of your code, so do your best here to
+point the reader to the actual API.
+
+If your codebase is fairly large or has different sets of APIs, you
+should use the doxygen 'group' tag to keep these APIs together. For
+example, the roscpp documentation has 'libros' group.
+-->
+
+
+*/

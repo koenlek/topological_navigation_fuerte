@@ -1,0 +1,23 @@
+<package>
+  <description brief="graph_mapping_utils">
+
+Utility code for internal use in the graph_mapping stack
+
+  </description>
+  <author>Bhaskara Marthi</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/graph_mapping_utils</url>
+  <depend package="tf"/>
+  <depend package="roscpp"/>
+  <depend package="occupancy_grid_utils"/>
+  <depend package="geometry_msgs"/>
+  <depend package="graph_mapping_msgs"/>
+
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lgraph_mapping_utils"/>
+  </export>
+
+</package>
+
+

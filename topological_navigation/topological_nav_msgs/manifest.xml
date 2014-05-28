@@ -1,0 +1,17 @@
+<package>
+  <description brief="topological_nav_msgs">
+
+     topological_nav_msgs
+
+  </description>
+  <author>Bhaskara Marthi</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/topological_nav_msgs</url>
+  <depend package="geometry_msgs"/>
+  <depend package="actionlib_msgs"/>
+  <depend package="nav_msgs"/>
+
+</package>
+
+

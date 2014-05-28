@@ -1,0 +1,8 @@
+# Requests the topological mapper to switch to a new grid
+# Note that the mapper will also switch grids on its own
+# when moving off the current grid.
+uint32 grid
+---
+
+# For now, no response.  Might want to eventually have one
+# to indicate success or failure.

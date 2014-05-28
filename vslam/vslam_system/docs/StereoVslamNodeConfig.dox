@@ -1,0 +1,38 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~detector" : \b [str] Keypoint detector min: , default: FAST, max: 
+- \b "~fast_threshold" : \b [int] FAST detector threshold min: 1, default: 10, max: 200
+- \b "~fast_nonmax_suppression" : \b [bool] FAST detector nonmax suppression on/off min: False, default: True, max: True
+- \b "~harris_max_keypoints" : \b [int] Max keypoints returned min: 1, default: 300, max: 1000
+- \b "~harris_block_size" : \b [int] Size of averaging block min: 1, default: 3, max: 11
+- \b "~harris_min_distance" : \b [double] Minimum distance between returned corners min: 1.0, default: 1.0, max: 20.0
+- \b "~harris_quality_level" : \b [double] Minimal accepted quality min: 0.0, default: 0.01, max: 1.0
+- \b "~harris_k" : \b [double] Harris detector free parameter min: 0.0, default: 0.04, max: 1.0
+- \b "~star_max_size" : \b [int] Max feature size min: 4, default: 16, max: 128
+- \b "~star_response_threshold" : \b [int] Threshold to eliminate weak features min: 0, default: 30, max: 200
+- \b "~star_line_threshold_projected" : \b [int] Threshold to eliminate edges min: 0, default: 10, max: 50
+- \b "~star_line_threshold_binarized" : \b [int] Another threshold to eliminate edges min: 0, default: 8, max: 50
+- \b "~star_suppress_nonmax_size" : \b [int] Size of neighborhood for nonmax suppression min: 0, default: 5, max: 11
+- \b "~surf_hessian_threshold" : \b [double] Minimum hessian response min: 0.0, default: 1000.0, max: 8000.0
+- \b "~surf_octaves" : \b [int] Number of octaves min: 1, default: 3, max: 10
+- \b "~surf_octave_layers" : \b [int] Number of layers within each octave min: 1, default: 4, max: 10
+- \b "~grid_adapter" : \b [bool] Grid partitioning adapter on/off min: False, default: False, max: True
+- \b "~grid_max_keypoints" : \b [int] Max total keypoints min: 1, default: 300, max: 1000
+- \b "~grid_rows" : \b [int] Grid rows min: 1, default: 4, max: 8
+- \b "~grid_cols" : \b [int] Grid columns min: 1, default: 4, max: 8
+- \b "~vo_ransac_iterations" : \b [int] Visual Odometry RANSAC iterations min: 1, default: 1000, max: 10000
+- \b "~vo_polish" : \b [bool] Visual Odometry polish with SBA on/off min: False, default: True, max: True
+- \b "~vo_window_x" : \b [int] Visual Odometry matching window size (x) min: 1, default: 92, max: 640
+- \b "~vo_window_y" : \b [int] Visual Odometry matching window size (y) min: 1, default: 48, max: 480
+- \b "~min_keyframe_dist" : \b [double] Minimum keyframe distance (meters) min: 0.0, default: 0.2, max: 50.0
+- \b "~min_keyframe_angle" : \b [double] Minimum keyframe angular distance (radians) min: 0.0, default: 0.1, max: 3.14
+- \b "~min_inliers" : \b [int] Minimum keyframe inliers min: 0, default: 0, max: 1000
+- \b "~pr_ransac_iterations" : \b [int] Place Recognizer RANSAC iterations min: 1, default: 5000, max: 10000
+- \b "~pr_polish" : \b [bool] Place Recognizer polish with SBA on/off min: False, default: True, max: True
+- \b "~pr_window_x" : \b [int] Place Recognizer matching window size (x) min: 1, default: 92, max: 640
+- \b "~pr_window_y" : \b [int] Place Recognizer matching window size (y) min: 1, default: 48, max: 480
+- \b "~pr_skip" : \b [int] Number of latest frames for Place Recognizer to skip min: 0, default: 20, max: 100
+- \b "~pr_inliers" : \b [int] Minimum number of inliers for Place Recognition min: 1, default: 200, max: 1000
+

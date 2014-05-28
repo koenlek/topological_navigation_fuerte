@@ -1,0 +1,23 @@
+<package>
+  <description brief="laser_slam_mapper">
+
+A mapper that builds a 2d topological map using the output from the slam algorithm in the laser_slam package.
+
+  </description>
+  <author>Bhaskara Marthi</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/laser_slam_mapper</url>
+  <depend package="laser_slam"/>
+  <depend package="topological_map_2d"/>
+  <depend package="mongo_ros"/>
+  <depend package="tf"/>
+  <depend package="pcl"/>
+  <depend package="octomap_ros"/>
+<depend package="octomap" />
+  <depend package="roscpp"/>
+  <depend package="visualization_msgs"/>
+
+</package>
+
+

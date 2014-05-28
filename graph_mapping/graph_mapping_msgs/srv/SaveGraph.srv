@@ -1,0 +1,5 @@
+# An absolute pathname that can be accessed by the graph_mapper node
+string filename
+---
+# Did we successfully write the file
+bool succeeded

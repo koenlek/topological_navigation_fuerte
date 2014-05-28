@@ -1,0 +1,55 @@
+--- makefile.def	2008-10-30 03:24:08.000000000 -0700
++++ makefile.def.mod	2010-03-01 11:31:44.000000000 -0800
+@@ -46,50 +46,10 @@
+ #		"Complex".
+ 
+ 
+-
+-# IBM xlC  v. 1.1
+-#
+-CCC             = xlC
+-CC              = xlc
+-CCCFLAGS        = -+ -O -DCOMPLEX=complex
+-LDFLAGS         = $(SPARSELIB_DIR)/lib/libsparse.a $(SPARSELIB_DIR)/lib/libspblas.a  \
+-		  $(SPARSELIB_DIR)/lib/libmv.a -lm -lcomplex
+-
+-
+-
+-# Sun C++ 4.0.1 
+-#
+-CCC 			= CC
+-CC 				= acc	
+-CCCFLAGS 		= -O +w -DMV_VECTOR_BOUNDS_CHECK -g
+-CCCFLAGS 		=  +w -DMV_VECTOR_BOUNDS_CHECK -g -DCOMPLEX_OSTREAM -DCOMPLEX=complex
+-LDFLAGS			=  $(SPARSELIB_DIR)/lib/libsparse.a $(SPARSELIB_DIR)/lib/libspblas.a  \
+-						$(SPARSELIB_DIR)/lib/libmv.a -lm -lcomplex
+-
+-
+-
+-# g++ v. 2.6.3
+-#
+-CCC 			= g++
+-CC 				= gcc	
+-CCCFLAGS 		=  -Wall -DMV_VECTOR_BOUNDS_CHECK -g -DCOMPLEX=complex
+-LDFLAGS			=   $(SPARSELIB_DIR)/lib/libsparse.a $(SPARSELIB_DIR)/lib/libspblas.a \
+-						$(SPARSELIB_DIR)/lib/libmv.a -lm 
+-
+-# g++ v. 2.7.0
+-#
+-CCC 			= g++
+-CC 				= gcc	
+-CCCFLAGS 	=  -DMV_VECTOR_BOUNDS_CHECK -g -Wall -pedantic\ 
+-     '-DCOMPLEX=std::complex<double>'  
+-CCCFLAGS 	=  -g -Wall -pedantic -O3 '-DCOMPLEX=std::complex<double>'  
+-LDFLAGS	= $(SPARSELIB_DIR)/lib/libsparse.a $(SPARSELIB_DIR)/lib/libspblas.a \
+-					$(SPARSELIB_DIR)/lib/libmv.a -lm 
+-
+ # g++ v. 4.0.1
+ #
+-CCC 			= g++
+-CC 				= gcc	
++CCC 			= g++ -fPIC
++CC 				= gcc -fPIC
+ CCCFLAGS 	=  -ansi -g -Wall -pedantic -O3 '-DCOMPLEX=std::complex<double>'  
+ LDFLAGS	= $(SPARSELIB_DIR)/lib/libsparse.a $(SPARSELIB_DIR)/lib/libspblas.a \
+ 					$(SPARSELIB_DIR)/lib/libmv.a -lm 

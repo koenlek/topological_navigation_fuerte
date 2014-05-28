@@ -1,0 +1,60 @@
+#
+# Makefile for sSBA library and examples
+#
+
+CC = g++
+CXX = g++
+LD = g++
+
+#EIGEN3_DIR = /home/konolige/cturtle_trunk/point_cloud_perception/eigen3
+#CSPARSE_DIR = /home/konolige/cturtle_trunk/vslam/csparse
+EIGEN3_DIR = /u/konolige/cturtle_trunk/ros-pkg/point_cloud_perception/eigen3
+CSPARSE_DIR = /u/konolige/cturtle_trunk/ros-pkg/vslam/csparse
+
+CPPFLAGS = -Wall -g -O3 -fPIC -Iinclude -I/usr/local/include \
+  -I$(CSPARSE_DIR)/include -I$(EIGEN3_DIR)/include
+GCC = g++
+LDFLAGS = -Llib -L$(CSPARSE_DIR)/lib -Wl,-rpath,$(CSPARSE_DIR)/lib -lssba -lcsparse
+LDVIS = -Llib -lfltk -lfltk_gl -lglut
+
+SHAREDFLAGS = -shared -Wl,-soname,
+
+SSBAOBJS = csparse sba spa2d spa proj node sba_file_io
+
+all:	lib/libssba.so bin/run_sba bin/run_spa
+
+bin/run_sba: obj/run_sba.o
+	$(LD) $(LDFLAGS) -o $@ obj/run_sba.o
+bin/run_spa: obj/run_spa.o
+	$(LD) $(LDFLAGS) -o $@ obj/run_spa.o
+
+lib/libssba.so: $(SSBAOBJS:%=obj/%.o) 
+	$(LD) $(SHAREDFLAGS)libssba.so -o $@ $(SSBAOBJS:%=obj/%.o)
+
+
+# general cpp command from src->obj
+obj/%.o:src/%.cpp
+	$(GCC) $(CPPFLAGS) -c $< -o $@
+obj/%.o:examples/%.cpp
+	$(GCC) $(CPPFLAGS) -c $< -o $@
+
+test:	$(OBJECTS) test.o
+	$(LD) -o test $(OBJECTS) test.o -lyaml
+
+clean:
+	- rm obj/*.o
+	- rm bin/*
+	- rm lib/*.so
+
+dist:
+	sh dist.sh
+
+obj/dcam.o: include/stereo/stereolib.h 
+obj/dcam.o: $(OPENCV_DIR)/opencv/include/opencv/cv.h
+obj/dcam.o: include/image/image.h
+obj/stereodcam.o: include/dcam/stereodcam.h include/dcam/dcam.h
+obj/stereodcam.o: include/image/image.h
+obj/stereodcam.o: include/stereo/stereolib.h
+obj/stereodcam.o: $(OPENCV_DIR)/opencv/include/opencv/cv.h
+obj/stereolib.o: include/stereo/stereolib.h 
+obj/ost.o: include/stereo/stereolib.h 

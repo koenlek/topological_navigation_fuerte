@@ -1,0 +1,13 @@
+constraint_sources: [scan_odom]
+
+scan_odom:
+  type: scan_odometry
+  max_link_length: 8.0
+  min_chain_length: 10
+  use_covariances: true
+
+odom:
+  type: odometry
+# fake_place_rec:
+#  type: fake_loop_closure
+#  proximity_threshold: 0.4

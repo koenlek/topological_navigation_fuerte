@@ -1,0 +1,6 @@
+# Request: 2 track ids to be merged.
+int32 trackid0
+int32 trackid1
+---
+# Response: ID of the resulting track; -1 if failure.
+int32 trackid

@@ -1,0 +1,36 @@
+/**
+\mainpage
+\htmlinclude manifest.html
+
+\b posest is a package for estimating camera pose from motion.
+
+<!-- 
+Provide an overview of your package.
+-->
+
+
+\section codeapi Code API
+
+pe::PoseEstimator is the abstract class that declares the methods used for 
+estimating a pose from frames. There are two classes that inherit from it 
+depending on whether you have a monocular or stereo system: 
+pe::PoseEstimator2d for monocular frames and pe::PoseEstimator3d for stereo
+frames.
+
+The frames passed into these classes must have image features and descriptors
+already filled in. You may want to refer to the documentation for 
+<a href="http://www.ros.org/doc/api/frame_common/html/">frame_common</a>.
+
+<!--
+Provide links to specific auto-generated API documentation within your
+package that is of particular interest to a reader. Doxygen will
+document pretty much every part of your code, so do your best here to
+point the reader to the actual API.
+
+If your codebase is fairly large or has different sets of APIs, you
+should use the doxygen 'group' tag to keep these APIs together. For
+example, the roscpp documentation has 'libros' group.
+-->
+
+
+*/

@@ -1,0 +1,28 @@
+<package>
+  <description brief="pose_graph">
+The pose_graph and associated data structures.
+  </description>
+  <author>Bhaskara Marthi</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pose_graph</url>
+  <depend package="roscpp"/>
+  <depend package="geometry_msgs"/>
+  <depend package="sensor_msgs" />
+  <depend package="nav_msgs" />
+  <depend package="tf"/>
+  <depend package="visualization_msgs"/>
+  <depend package="laser_geometry"/>
+  <depend package="occupancy_grid_utils" />
+  <depend package="graph_mapping_msgs"/>
+  <depend package="graph_mapping_utils"/>
+  <depend package="mongo_ros"/>
+  <depend package="sba"/>
+
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lpose_graph"/>
+  </export>
+
+</package>
+
+

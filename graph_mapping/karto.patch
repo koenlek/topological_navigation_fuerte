@@ -1,0 +1,105 @@
+Index: karto/manifest.xml
+===================================================================
+--- karto/manifest.xml	(revision 35802)
++++ karto/manifest.xml	(revision 35803)
+@@ -17,7 +17,7 @@
+   <depend package="rosconsole"/>
+   <depend package="nav_msgs"/>
+   <depend package="message_filters"/>
+-  <depend package="eigen3"/>
++  <depend package="eigen"/>
+ 
+   <export>
+     <cpp cflags="-I${prefix}/karto/include" lflags="-Wl,-rpath,${prefix}/karto/lib -L${prefix}/karto/lib -lOpenKarto"/>
+Index: karto/src/spa_solver.h
+===================================================================
+--- karto/src/spa_solver.h	(revision 35802)
++++ karto/src/spa_solver.h	(revision 35803)
+@@ -24,8 +24,8 @@
+ #define EIGEN_USE_NEW_STDVECTOR
+ #endif // EIGEN_USE_NEW_STDVECTOR
+ 
+-#define EIGEN_DEFAULT_IO_FORMAT Eigen3::IOFormat(10)
+-#include <Eigen3/Eigen>
++#define EIGEN_DEFAULT_IO_FORMAT Eigen::IOFormat(10)
++#include <Eigen/Eigen>
+ 
+ #include "sba/spa2d.h"
+ 
+Index: karto/src/spa_solver.cpp
+===================================================================
+--- karto/src/spa_solver.cpp	(revision 35802)
++++ karto/src/spa_solver.cpp	(revision 35803)
+@@ -44,7 +44,7 @@
+ {
+   corrections.clear();
+ 
+-  typedef std::vector<sba::Node2d, Eigen3::aligned_allocator<sba::Node2d> > NodeVector;
++  typedef std::vector<sba::Node2d, Eigen::aligned_allocator<sba::Node2d> > NodeVector;
+ 
+   ROS_INFO("Calling doSPA for loop closure");
+   m_Spa.doSPA(40);
+@@ -60,7 +60,7 @@
+ void SpaSolver::AddNode(karto::Vertex<karto::LocalizedRangeScan>* pVertex)
+ {
+   karto::Pose2 pose = pVertex->GetObject()->GetCorrectedPose();
+-  Eigen3::Vector3d vector(pose.GetX(), pose.GetY(), pose.GetHeading());
++  Eigen::Vector3d vector(pose.GetX(), pose.GetY(), pose.GetHeading());
+   m_Spa.addNode(vector, pVertex->GetObject()->GetUniqueId());
+ }
+ 
+@@ -71,10 +71,10 @@
+   karto::LinkInfo* pLinkInfo = (karto::LinkInfo*)(pEdge->GetLabel());
+ 
+   karto::Pose2 diff = pLinkInfo->GetPoseDifference();
+-  Eigen3::Vector3d mean(diff.GetX(), diff.GetY(), diff.GetHeading());
++  Eigen::Vector3d mean(diff.GetX(), diff.GetY(), diff.GetHeading());
+ 
+   karto::Matrix3 precisionMatrix = pLinkInfo->GetCovariance().Inverse();
+-  Eigen3::Matrix<double,3,3> m;
++  Eigen::Matrix<double,3,3> m;
+   m(0,0) = precisionMatrix(0,0);
+   m(0,1) = m(1,0) = precisionMatrix(0,1);
+   m(0,2) = m(2,0) = precisionMatrix(0,2);
+Index: karto_scan_matcher/include/karto_scan_matcher/karto_scan_matcher.h
+===================================================================
+--- karto_scan_matcher/include/karto_scan_matcher/karto_scan_matcher.h	(revision 35802)
++++ karto_scan_matcher/include/karto_scan_matcher/karto_scan_matcher.h	(revision 35803)
+@@ -55,7 +55,7 @@
+ #include <boost/shared_ptr.hpp>
+ #include <boost/optional.hpp>
+ #include <vector>
+-#include <Eigen3/Dense>
++#include <Eigen/Dense>
+ 
+ 
+ 
+@@ -86,13 +86,13 @@
+ /// \brief Result of scan matching
+ struct ScanMatchResult
+ {
+-  ScanMatchResult (const geometry_msgs::Pose2D& pose, const Eigen3::Matrix3f& cov,
++  ScanMatchResult (const geometry_msgs::Pose2D& pose, const Eigen::Matrix3f& cov,
+                    const double response) :
+     pose(pose), cov(cov), response(response)
+   {}
+ 
+   geometry_msgs::Pose2D pose;
+-  Eigen3::Matrix3f cov;
++  Eigen::Matrix3f cov;
+   double response;
+ };
+ 
+Index: karto_scan_matcher/src/karto_scan_matcher.cpp
+===================================================================
+--- karto_scan_matcher/src/karto_scan_matcher.cpp	(revision 35802)
++++ karto_scan_matcher/src/karto_scan_matcher.cpp	(revision 35803)
+@@ -202,7 +202,7 @@
+ 
+   gm::Pose2D current_estimate = pose;
+   double last_response = -42.42;
+-  Eigen3::Matrix3f covariance = Eigen3::Matrix3f::Zero();
++  Eigen::Matrix3f covariance = Eigen::Matrix3f::Zero();
+ 
+   // Repeatedly match with each matcher, using the previous matcher's estimate to initialize
+   BOOST_FOREACH (const MatcherPtr matcher, matchers_) {

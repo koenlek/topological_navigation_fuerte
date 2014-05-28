@@ -1,0 +1,32 @@
+<!--
+   This starts up the pose_graph creator node.  
+   Start this together with move_base_stage, for example, and drive the robot around in rviz.
+   It will create a pose graph and publish it to the visualization_marker topic.
+-->
+
+<launch>
+
+  <node pkg="laser_slam" type="laser_slam_node" name="laser_slam_node" output="screen">
+    <remap from="scan" to="base_scan" />
+    <remap from="global_map" to="map"/>
+
+    <param name="position_displacement_threshold" value="0.3" />
+    <param name="angle_displacement_threshold" value="0.3" />
+    
+    <param name="fixed_frame" value="odom"/>
+    <param name="base_frame" value="base_footprint"/>
+    <param name="laser_frame" value="base_laser_link"/>
+    <param name="optimization_frame" value="map"/>
+
+    <param name="scan_time_tolerance" value="0.1"/>
+
+    <param name="grid_resolution" value="0.02" />
+    <param name="visualization_rate" value="1.0" />
+
+    <param name="odom_noise" value="0.0" />
+
+    <param name="do_global_localization" value="false"/>
+  </node>
+
+
+</launch>

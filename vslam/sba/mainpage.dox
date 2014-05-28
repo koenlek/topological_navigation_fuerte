@@ -1,0 +1,38 @@
+/**
+\mainpage
+\htmlinclude manifest.html
+
+Sparse Bundle Adjustment, or <b>SBA</b>, is used for reconstructing 3D structure 
+and camera pose from a series of monocular or stereo images. The technique is 
+usually used for refining existing estimates of 3D geometry and camera pose. 
+
+<!-- 
+Provide an overview of your package.
+-->
+
+
+\section codeapi Code API
+
+In most cases, you will want to use the sba::SysSBA class to set up a system
+consisting of sba::Node and sba::Track.
+
+Each sba::Node represents a camera pose and also contains camera projection 
+matrices.
+
+An sba::Track contains a single sba::Point and a map of sba::Proj, containing
+the projections of the point into each node in which it can be seen. The map
+is indexed by sba::Node index.
+
+<!--
+Provide links to specific auto-generated API documentation within your
+package that is of particular interest to a reader. Doxygen will
+document pretty much every part of your code, so do your best here to
+point the reader to the actual API.
+
+If your codebase is fairly large or has different sets of APIs, you
+should use the doxygen 'group' tag to keep these APIs together. For
+example, the roscpp documentation has 'libros' group.
+-->
+
+
+*/

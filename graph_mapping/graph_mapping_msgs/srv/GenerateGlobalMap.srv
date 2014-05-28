@@ -1,0 +1,4 @@
+float32 resolution
+---
+nav_msgs/OccupancyGrid map
+bool succeeded

@@ -1,0 +1,13 @@
+<launch>
+
+  <node name="mongo" type="wrapper.py" pkg="mongodb">
+    <param name="overwrite" value="true"/>
+  </node>
+
+  <!-- Test node -->
+  <test test-name="graph_test" type="test_pose_graph" pkg="pose_graph"
+        time-limit="15.0" />
+        
+
+  
+</launch>

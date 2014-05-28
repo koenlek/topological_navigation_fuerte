@@ -1,0 +1,34 @@
+/**
+\mainpage
+\htmlinclude manifest.html
+
+\b vslam_system contains classes and methods for visual odometry, visual SLAM,
+and place recognition for loop closure.
+
+<!-- 
+Provide an overview of your package.
+-->
+
+\section codeapi Code API
+
+vslam::VslamSystem is a class that performs VSLAM and Place Recognition on
+stereo images.
+
+vslam::VoSt does visual odometry and pose estimation on stereo images.
+
+vslam::PlaceRecognizer keeps track of previous frames to use for recognizing
+previously seen locations for loop closure.
+
+<!--
+Provide links to specific auto-generated API documentation within your
+package that is of particular interest to a reader. Doxygen will
+document pretty much every part of your code, so do your best here to
+point the reader to the actual API.
+
+If your codebase is fairly large or has different sets of APIs, you
+should use the doxygen 'group' tag to keep these APIs together. For
+example, the roscpp documentation has 'libros' group.
+-->
+
+
+*/

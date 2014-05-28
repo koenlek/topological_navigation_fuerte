@@ -1,0 +1,17 @@
+<package>
+  <description brief="Sparse matrix routines">
+
+    Sparselib++ is a set of sparse matrix routines in C++ from NIST
+
+  </description>
+  <author>Roldan Pozo, Karin A. Remington, Andrew Lumsdaine</author>
+  <license>Public Domain</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://math.nist.gov/sparselib++</url>
+  <export>
+    <cpp cflags="-I${prefix}/include/ -DCOMPLEX='std::complex&lt;double&gt;'" lflags="-L${prefix}/lib/ -lsparse.a -lspblas.a -lmv.a" />
+  </export>
+
+  <rosdep name="unzip" />
+
+</package>

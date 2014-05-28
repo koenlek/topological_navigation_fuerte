@@ -1,0 +1,16 @@
+<package>
+<description>
+Defines 2d topological map, which is a set of 2d occupancy grids connected by approximate pose constraints.
+</description>
+<author>Bhaskara Marthi</author>
+<license>BSD</license>
+<review status="unreviewed" notes=""/>
+<depend package="roscpp" />
+<depend package="topological_nav_msgs"/>
+<depend package="graph_mapping_utils"/>
+
+<export>
+<cpp cflags="-I${prefix}/include -I${prefix}/srv/cpp"  lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -ltopological_map_2d" />
+</export>
+<url>http://ros.org/wiki/topological_map_2d</url>
+</package>

@@ -1,0 +1,27 @@
+<launch>
+
+  <!-- Use simulated time from rosbag -->
+  <param name="/use_sim_time" value="True" />
+  
+  <!-- Publish WG map so we can see it in rviz -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find willow_maps)/willow-2010-02-18-0.025.pgm 0.025"/>
+
+  <!-- Publish transforms from /map to /pgraph, taken to be the initial robot pose -->
+  <!-- <node name="pgraph_footprint_tf_publisher" pkg="tf" type="static_transform_publisher" args="19.194 18.436 0.0 0.0 0.0 0.0 1.0 /map /pgraph_old 50" /> -->
+  <node name="pgraph_tf_publisher" pkg="tf" type="static_transform_publisher" args="-30 -5 0.0 0.0 0.0 -0.37 0.92 /pgraph /map 50" />
+  <!-- This is the transform from /base_footprint to /wide_stereo_link -->
+  <!-- <node name="pgraph_tf_publisher" pkg="tf" type="static_transform_publisher" args="0.074 0.033 1.3 0.002 0.086 0.005 0.996 /pgraph_footprint /pgraph 50" /> -->
+  <!-- This is the transform from /base_footprint to /wide_stereo_optical_frame, the one we actually should be using -->
+  <!--node name="pgraph_tf_publisher" pkg="tf" type="static_transform_publisher" args="0.074 0.033 1.3 0.543 -0.540 0.451 -0.458 /pgraph_footprint /pgraph 50" /-->
+
+  <!-- Run stereo VSLAM on wide stereo data -->
+  <group ns="wide_stereo">
+    <node name="stereo_vslam_node" pkg="vslam_system" type="stereo_vslam_node" args="$(find vocabulary_tree)/holidays.tree $(find vocabulary_tree)/holidays.weights $(find vslam_system)/data/calonder.rtc" output="screen" cwd="node" />
+  </group>
+
+  <!-- Show VO tracks -->
+  <node name="vo_tracks_view" pkg="image_view" type="image_view">
+    <remap from="image" to="/vslam/vo_tracks/image" />
+  </node>
+
+</launch>

@@ -1,0 +1,17 @@
+<launch>
+
+  <node pkg="topological_roadmap" type="roadmap_builder" name="roadmap_builder"
+        output="screen">
+    <param name="robot_radius" value="0.3"/>
+    <param name="waypoint_spacing" value="5.0"/>
+    <param name="visualization_frame" value="graph_optimization"/>
+    <param name="visualize_node_ids" value="true"/>
+  </node>
+
+  <include file="$(find laser_slam_mapper)/launch/mapper.launch"/>
+
+  <include file="$(find laser_slam)/launch/laser_slam.launch">
+    <arg name="overwrite_existing" value="true"/>
+  </include>
+
+</launch>

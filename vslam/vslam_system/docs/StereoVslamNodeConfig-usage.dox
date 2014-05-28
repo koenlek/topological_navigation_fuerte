@@ -1,0 +1,39 @@
+\subsubsection usage Usage
+\verbatim
+<node name="StereoVslamNode" pkg="vslam_system" type="StereoVslamNode">
+  <param name="detector" type="str" value="FAST" />
+  <param name="fast_threshold" type="int" value="10" />
+  <param name="fast_nonmax_suppression" type="bool" value="True" />
+  <param name="harris_max_keypoints" type="int" value="300" />
+  <param name="harris_block_size" type="int" value="3" />
+  <param name="harris_min_distance" type="double" value="1.0" />
+  <param name="harris_quality_level" type="double" value="0.01" />
+  <param name="harris_k" type="double" value="0.04" />
+  <param name="star_max_size" type="int" value="16" />
+  <param name="star_response_threshold" type="int" value="30" />
+  <param name="star_line_threshold_projected" type="int" value="10" />
+  <param name="star_line_threshold_binarized" type="int" value="8" />
+  <param name="star_suppress_nonmax_size" type="int" value="5" />
+  <param name="surf_hessian_threshold" type="double" value="1000.0" />
+  <param name="surf_octaves" type="int" value="3" />
+  <param name="surf_octave_layers" type="int" value="4" />
+  <param name="grid_adapter" type="bool" value="False" />
+  <param name="grid_max_keypoints" type="int" value="300" />
+  <param name="grid_rows" type="int" value="4" />
+  <param name="grid_cols" type="int" value="4" />
+  <param name="vo_ransac_iterations" type="int" value="1000" />
+  <param name="vo_polish" type="bool" value="True" />
+  <param name="vo_window_x" type="int" value="92" />
+  <param name="vo_window_y" type="int" value="48" />
+  <param name="min_keyframe_dist" type="double" value="0.2" />
+  <param name="min_keyframe_angle" type="double" value="0.1" />
+  <param name="min_inliers" type="int" value="0" />
+  <param name="pr_ransac_iterations" type="int" value="5000" />
+  <param name="pr_polish" type="bool" value="True" />
+  <param name="pr_window_x" type="int" value="92" />
+  <param name="pr_window_y" type="int" value="48" />
+  <param name="pr_skip" type="int" value="20" />
+  <param name="pr_inliers" type="int" value="200" />
+</node>
+\endverbatim
+

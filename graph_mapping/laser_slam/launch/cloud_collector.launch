@@ -1,0 +1,26 @@
+<launch>
+  <node pkg="nodelet" type="nodelet" name="cloud_collector_nodelet_manager" args="manager" output="screen"/>
+
+  <node pkg="nodelet" type="nodelet" name="cloud_collector" output="screen"
+        args="load laser_slam/CloudCollectorROS cloud_collector_nodelet_manager">
+    <remap from="cloud_collector/input" to="combined_cloud"/>
+    <param name="clouds_per_group" value="50"/>
+  </node>
+
+  <node pkg="point_cloud_converter" type="point_cloud_converter" name="point_cloud_converter">
+    <remap from="points_in" to="ground_object_cloud"/>
+  </node>
+
+  <!-- Run a VoxelGrid filter to clean NaNs and downsample the data -->
+  <node pkg="nodelet" type="nodelet" name="voxel_grid" args="load pcl/VoxelGrid pcl_manager" output="screen">
+    <remap from="~input" to="points2_out" />
+    <remap from="~output" to="combined_cloud"/>
+    <rosparam>
+      leaf_size: 0.001
+      filter_field_name: z
+      filter_limit_min: 0.2
+      filter_limit_max: 2.0
+    </rosparam>
+  </node>
+
+</launch>

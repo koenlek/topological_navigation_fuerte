@@ -1,0 +1,34 @@
+<launch>
+
+  <include file="$(find topological_roadmap)/launch/roadmap.launch"/>
+
+  <arg name="db_location" default="$(find laser_slam)/data"/>
+
+  <!-- Start up nav stack.  It receives maps from topological mapper on local_grid topic. -->
+  <remap from="map" to="local_grid" />
+  <include file="$(find navigation_stage)/move_base_config/move_base.xml"/> <!-- KL: This loads all basic params, common, local and global! -->
+  <!-- KL: params below where given, but I think default from move_base.xml are also ok -->
+  <!-- 
+  <param name="move_base_node/NavfnROS/default_tolerance" value="0.2" />
+  <param name="move_base_node/planner_patience" value="2.0" /> 
+  <param name="move_base_node/controller_patience" value="2.0" /> 
+  -->
+  <param name="move_base_node/local_costmap/transform_tolerance" value="0.8" />
+  <param name="move_base_node/global_costmap/transform_tolerance" value="0.8" />
+  
+  <!-- KL: Add our own footprint -->
+  <rosparam file="$(find topological_roadmap)/move_base_config/footprint.yaml" command="load" ns="global_costmap" />
+  <rosparam file="$(find topological_roadmap)/move_base_config/footprint.yaml" command="load" ns="local_costmap" />
+  
+  <node pkg="topological_roadmap" type="move_base_topo" name="move_base_topo_node" output="screen">
+    <param name="costmap/static_map" value="false" />
+    <param name="costmap/global_frame" value="odom" />
+    <param name="costmap/resolution" value="0.025" />
+    <param name="costmap/transform_tolerance" value="0.8" />
+    <param name="planner/default_tolerance" value="0.2" />
+    
+    <rosparam file="$(find topological_roadmap)/move_base_config/costmap_common_params.yaml" command="load" ns="costmap" />
+    </node>
+
+
+</launch>

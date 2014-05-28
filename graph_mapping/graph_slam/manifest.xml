@@ -1,0 +1,28 @@
+<package>
+  <description brief="graph_slam">
+
+     graph_slam
+
+  </description>
+  <author>Bhaskara Marthi</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/graph_slam</url>
+  <depend package="pose_graph"/>
+  <depend package="roscpp"/>
+  <depend package="sensor_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="occupancy_grid_utils"/>
+  <depend package="graph_mapping_utils"/>
+  <depend package="rosbag"/>
+  <depend package="tf"/> <!--KL: Might be needed by graph_mapper.h?-->
+
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lgraph_slam"/>
+  </export>
+
+
+</package>
+
+

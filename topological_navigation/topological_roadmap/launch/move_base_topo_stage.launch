@@ -1,0 +1,12 @@
+<!-- 
+The full topological nav system and stage simulator
+-->
+
+<launch>
+  <include file="$(find topological_roadmap)/launch/roadmap_stage.launch"/>
+  
+  <!-- RVIZ, added by KL -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find topological_roadmap)/rviz/topo_nav.vcg" />
+
+  <include file="$(find topological_roadmap)/launch/topo_nav_stage.launch"/>
+</launch>

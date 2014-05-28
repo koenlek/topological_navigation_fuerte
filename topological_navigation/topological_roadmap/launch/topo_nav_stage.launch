@@ -1,0 +1,43 @@
+<!-- 
+Starts up the topological navigation and move_base.
+Requires external sources of the topological map and roadmap.
+These are provided by roadmap_stage.launch.
+-->
+
+<launch>
+
+  <!-- Start up nav stack.  It receives maps from topological mapper on local_grid topic. -->
+  <remap from="map" to="local_grid" />
+  <include file="$(find topological_roadmap)/move_base_config/move_base.xml"/> 
+  <!-- KL: I commented these out: I don think they are necessary adaptions to the defaults... 
+  <param name="move_base_node/NavfnROS/default_tolerance" value="0.2" />
+  <param name="move_base_node/planner_patience" value="2.0" /> 
+  <param name="move_base_node/controller_patience" value="2.0" /> 
+  -->
+
+  <!-- Override the annoying sbcl recovery behavior that takes forever -->
+  <!-- KL: The block below gives an error, as recov behaviors are apparently somewhat renamed, therefor for now I have commented it out...
+  <rosparam>
+    move_base_node:
+      recovery_behaviors: [{name: aggressive_clear, type: clear_costmap_recovery/ClearCostmapRecovery}, {name: backward, type: twist_recovery/TwistRecovery}, {name: rotate_in_place, type: rotate_recovery/RotateRecovery}]
+      aggressive_clear:
+        reset_distance: 1.84
+      backward:
+        linear_x: -0.3
+        linear_y: 0.0
+        angular_z: 0.0
+        duration: 0.5        
+  </rosparam>  -->
+
+  <!-- Start up the topological nav node -->
+  <node pkg="topological_roadmap" type="move_base_topo" name="move_base_topo_node" output="screen">
+    <param name="costmap/static_map" value="false" />
+    <param name="costmap/global_frame" value="odom" />
+    <param name="costmap/resolution" value="0.025" />
+    <param name="costmap/transform_tolerance" value="0.8" />
+    <param name="planner/default_tolerance" value="0.2" />
+    <rosparam file="$(find topological_roadmap)/move_base_config/footprint.yaml" command="load" ns="costmap" />
+  </node>
+
+
+</launch>

@@ -1,0 +1,14 @@
+<package>
+  <description>
+    Common definitions for frames in SBA, VSLAM.
+  </description>
+  <author>Kurt Konolige</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <rosdep name="opencv2"/>
+  <rosdep name="pcl"/>
+  <rosdep name="eigen"/>
+  <export>
+    <cpp cflags="`pkg-config --cflags eigen3` -I${prefix}/include -I${prefix}/msg/cpp" lflags="-L${prefix}/lib -Wl,-rpath,${prefix}/lib -lframe_common" />
+  </export>
+</package>

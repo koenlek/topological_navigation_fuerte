@@ -1,0 +1,14 @@
+<launch>
+
+  <!-- Use simulated time from rosbag -->
+  <!-- <param name="/use_sim_time" value="True" /> -->
+  
+    <!-- Run stereo VO on wide stereo data -->
+     <node name="ptcloud_vslam_node" pkg="vslam_system" type="ptcloud_vslam_node" args="$(find vocabulary_tree)/holidays.tree $(find vocabulary_tree)/holidays.weights $(find vslam_system)/data/calonder.rtc" output="screen" cwd="node" >
+     </node>
+  
+  <node name="vo_tracks_view" pkg="image_view" type="image_view">
+    <remap from="image" to="/vslam/vo_tracks/image" />
+  </node>
+ 
+</launch>

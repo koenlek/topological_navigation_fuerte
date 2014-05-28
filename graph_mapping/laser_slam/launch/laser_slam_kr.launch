@@ -1,0 +1,4 @@
+<launch>
+  <include file="$(find kidnapped_robot)/place_rec.launch"/>
+  <include file="$(find laser_slam)/launch/laser_slam.launch"/>
+</launch>

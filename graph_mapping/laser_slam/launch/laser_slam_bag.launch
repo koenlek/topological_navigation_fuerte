@@ -1,0 +1,9 @@
+<launch>
+
+  <arg name="bag"/>
+
+  <node pkg="rosbag" type="rosbag" name="rosplay" args="play --clock $(arg bag)" />
+  <include file="$(find laser_slam)/launch/laser_slam.launch">
+  </include>
+
+</launch>

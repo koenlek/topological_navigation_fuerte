@@ -1,0 +1,29 @@
+<package>
+  <description brief="laser_slam">
+A specific implementation of the algorithm in the graph_slam package that uses 2d laser data and scan matching.
+  </description>
+  <author>Bhaskara Marthi</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/laser_slam</url>
+
+  <depend package="karto_scan_matcher"/>
+  <depend package="graph_slam"/>
+  <depend package="graph_mapping_msgs"/>
+  <depend package="pose_graph"/>
+  <depend package="roscpp"/>
+  <depend package="geometry_msgs"/>
+  <depend package="occupancy_grid_utils"/>
+  <depend package="kidnapped_robot"/>
+  <depend package="pcl_ros"/>
+  <depend package="std_srvs"/>
+  <depend package="nodelet"/>
+  <depend package="dynamic_reconfigure"/>
+
+  <export>
+    <nodelet plugin="${prefix}/nodelets.xml"/>
+  </export>
+  
+</package>
+
+

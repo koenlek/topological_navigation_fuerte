@@ -1,0 +1,36 @@
+<!--
+Starts up stage simulator as well as the pose graph SLAM, topological mapping,
+and roadmap builder.  Does not bring up any navigation nodes.
+-->
+
+<launch>
+  <arg name="db_location" default="$(find laser_slam)/data"/>
+
+  <param name="/use_sim_time" value="true"/>
+
+  <!-- Stage simulator -->
+  <node pkg="stage" type="stageros" name="stageros"
+        args="$(find topological_roadmap)/stage_config/worlds/willow-pr2-5cm.world">
+    <param name="base_watchdog_timeout" value="0.2"/>
+  </node>
+
+  <!-- Laser-based pose graph SLAM -->
+  <include file="$(find laser_slam)/launch/laser_slam_stage.launch" >
+    <arg name="db_location" value="$(arg db_location)"/>
+  </include>
+
+
+  <!-- Topological mapper -->
+  <include file="$(find laser_slam_mapper)/launch/mapper_stage.launch"/>
+
+  <!-- Roadmap builder -->
+  <node pkg="topological_roadmap" type="roadmap_builder" name="roadmap_builder"
+        output="screen">
+    <param name="robot_radius" value="0.25"/>
+    <param name="waypoint_spacing" value="5.0"/>
+    <param name="visualization_frame" value="map"/>
+    <param name="visualize_node_ids" value="true"/>
+  </node>
+  
+
+</launch>

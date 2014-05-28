@@ -1,0 +1,18 @@
+<package>
+  <description brief="explore_2d">
+
+     explore_2d
+
+  </description>
+  <author>Bhaskara Marthi</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/explore_2d</url>
+  <depend package="occupancy_grid_utils"/>
+  <depend package="roscpp"/>
+  <depend package="actionlib"/>
+  <depend package="move_base_msgs"/>
+
+</package>
+
+

@@ -1,0 +1,3034 @@
+diff --git a/bpcg/include/bpcg/bpcg.h b/bpcg/include/bpcg/bpcg.h
+index 5d661eb..b951f3d 100644
+--- a/bpcg/include/bpcg/bpcg.h
++++ b/bpcg/include/bpcg/bpcg.h
+@@ -46,12 +46,12 @@
+ 
+ #include <vector>
+ #include <map>
+-#include <Eigen3/Core>
+-#include <Eigen3/Geometry>
+-#include <Eigen3/LU>
+-#include <Eigen3/StdVector>
++#include <Eigen/Core>
++#include <Eigen/Geometry>
++#include <Eigen/LU>
++#include <Eigen/StdVector>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace std;
+ 
+ //typedef Matrix<double,6,1> Vector6d;
+diff --git a/bpcg/manifest.xml b/bpcg/manifest.xml
+index 3e81356..ca9289d 100644
+--- a/bpcg/manifest.xml
++++ b/bpcg/manifest.xml
+@@ -5,7 +5,7 @@
+   <author>Kurt Konolige</author>
+   <license>BSD</license>
+   <review status="unreviewed" notes=""/>
+-  <depend package="eigen3"/>
++  <depend package="eigen"/>
+   <export>
+     <cpp cflags="-I${prefix}/include -I${prefix}/msg/cpp" />
+   </export>
+diff --git a/bpcg/src/test_bpcg.cpp b/bpcg/src/test_bpcg.cpp
+index 5db982a..4f1bc47 100644
+--- a/bpcg/src/test_bpcg.cpp
++++ b/bpcg/src/test_bpcg.cpp
+@@ -40,7 +40,7 @@
+ // Bring in gtest
+ #include <gtest/gtest.h>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ 
+ #include <iostream>
+diff --git a/sba/include/sba/csparse.h b/sba/include/sba/csparse.h
+index 7d47aba..e2cdc67 100644
+--- a/sba/include/sba/csparse.h
++++ b/sba/include/sba/csparse.h
+@@ -45,10 +45,10 @@
+ 
+ #include <stdio.h>
+ #include <iostream>
+-#include <Eigen3/Core>
+-#include <Eigen3/Geometry>
+-#include <Eigen3/LU>
+-#include <Eigen3/StdVector>
++#include <Eigen/Core>
++#include <Eigen/Geometry>
++#include <Eigen/LU>
++#include <Eigen/StdVector>
+ 
+ // CSparse header
+ extern "C" {
+@@ -73,7 +73,7 @@ extern "C" {
+ // block jacobian PCG
+ #include "bpcg/bpcg.h"
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace std;
+ 
+ namespace sba
+diff --git a/sba/include/sba/node.h b/sba/include/sba/node.h
+index b36d516..e3bcc37 100644
+--- a/sba/include/sba/node.h
++++ b/sba/include/sba/node.h
+@@ -5,8 +5,8 @@
+ 
+ #include <stdio.h>
+ #include <iostream>
+-#include <Eigen3/Core>
+-#include <Eigen3/Geometry>
++#include <Eigen/Core>
++#include <Eigen/Geometry>
+ 
+ // needed for camera params
+ #ifndef _CAMPARAMS_H_
+@@ -34,13 +34,13 @@ namespace sba
+ 
+   /// \brief Keypoints - subpixel using floats.
+   /// u,v are pixel coordinates, d is disparity (if stereo)
+-  typedef Eigen3::Vector3d Keypoint;
++  typedef Eigen::Vector3d Keypoint;
+ 
+ 
+   /// \brief Point holds 3D points using in world coordinates.
+   /// Currently we just represent these as 4-vectors, with a final
+   /// "1.0".
+-  typedef Eigen3::Vector4d Point;
++  typedef Eigen::Vector4d Point;
+ 
+ 
+   /// \brief NODE holds graph nodes corresponding to frames, for use in
+@@ -66,8 +66,8 @@ namespace sba
+     EIGEN_MAKE_ALIGNED_OPERATOR_NEW // needed for 16B alignment
+ 
+     // 6DOF pose as a unit quaternion and translation vector
+-    Eigen3::Matrix<double,4,1> trans; ///< Translation in homogeneous coordinates, last element is 1.0.
+-    Eigen3::Quaternion<double> qrot;  ///< Rotation of the node expressed as a Quaternion.
++    Eigen::Matrix<double,4,1> trans; ///< Translation in homogeneous coordinates, last element is 1.0.
++    Eigen::Quaternion<double> qrot;  ///< Rotation of the node expressed as a Quaternion.
+     
+     /// \brief Normalize quaternion to unit. 
+     /// Problem with global derivatives near w=0, solved by a hack for now.
+@@ -77,7 +77,7 @@ namespace sba
+     void normRotLocal();
+ 
+     /// Resultant transform from world to node coordinates.
+-    Eigen3::Matrix<double,3,4> w2n; 
++    Eigen::Matrix<double,3,4> w2n; 
+     
+     /// \brief Sets the transform matrices of the node.
+     void setTransform();
+@@ -85,11 +85,11 @@ namespace sba
+     // Covariance matrix, 6x6.  Variables are [trans,rot], with the
+     // rotational part being the xyz parameters of the unit
+     // quaternion
+-    //    Eigen3::Matrix<double,6,6> covar;
++    //    Eigen::Matrix<double,6,6> covar;
+ 
+     /// \brief Projection to frame image coordinates.
+     /// pre-multiply by the frame camera matrix.
+-    Eigen3::Matrix<double,3,3> Kcam; 
++    Eigen::Matrix<double,3,3> Kcam; 
+     double baseline;                    ///< baseline for stereo
+     
+     
+@@ -108,13 +108,13 @@ namespace sba
+     }
+ 
+     /// \brief The transform from world to image coordinates.
+-    Eigen3::Matrix<double,3,4> w2i;
++    Eigen::Matrix<double,3,4> w2i;
+     
+     /// Project a point into image coordinates.
+     /// \param pi The u, v projection of the point into image coordinates.
+     /// \param p The 3D point in world coordinates to be projected.
+-    void project2im(Eigen3::Vector2d &pi, const Point &p) const
+-          { Eigen3::Vector3d p1 = w2i * p; pi = p1.head(2)/p1(2); }
++    void project2im(Eigen::Vector2d &pi, const Point &p) const
++          { Eigen::Vector3d p1 = w2i * p; pi = p1.head(2)/p1(2); }
+ 
+     /// Set up world-to-image projection matrix (w2i), assumes camera parameters
+     /// are filled.
+@@ -123,10 +123,10 @@ namespace sba
+ 
+     /// \brief Derivatives of the rotation matrix transpose wrt quaternion xyz, 
+     /// used for calculating Jacobian wrt pose of a projection.
+-    Eigen3::Matrix<double,3,3> dRdx, dRdy, dRdz;
++    Eigen::Matrix<double,3,3> dRdx, dRdy, dRdz;
+     
+     /// \brief Constant matrices for derivatives.
+-    static Eigen3::Matrix3d dRidx, dRidy, dRidz; // these are constant
++    static Eigen::Matrix3d dRidx, dRidy, dRidz; // these are constant
+     
+     /// \brief Sets up constant matrices for derivatives.
+     static void initDr();       // call this to set up constant matrices
+@@ -141,16 +141,16 @@ namespace sba
+     bool isFixed;
+ 
+     /// Previous translation, saved for downdating within LM.
+-    Eigen3::Matrix<double,4,1> oldtrans;
++    Eigen::Matrix<double,4,1> oldtrans;
+     
+     /// Previous quaternion rotation, saved for downdating within LM.
+-    Eigen3::Quaternion<double> oldqrot;
++    Eigen::Quaternion<double> oldqrot;
+     
+     /// \brief Project a 3D point into the image frame as a monocular point.
+-    void projectMono(const Point& pt, Eigen3::Vector3d& proj);
++    void projectMono(const Point& pt, Eigen::Vector3d& proj);
+     
+     /// \brief Project a 3D point into the image frame as a stereo point.
+-    void projectStereo(const Point& pt, Eigen3::Vector3d& proj);
++    void projectStereo(const Point& pt, Eigen::Vector3d& proj);
+   };
+   
+   
+@@ -161,22 +161,22 @@ namespace sba
+   /// Based on translation vector and unit quaternion rotation, which
+   /// gives the frame's pose in world coordinates.  Assumes quaternion
+   /// is normalized (unit).  
+-  void transformW2F(Eigen3::Matrix<double,3,4> &m, 
+-                    const Eigen3::Matrix<double,4,1> &trans, 
+-                    const Eigen3::Quaternion<double> &qrot);
++  void transformW2F(Eigen::Matrix<double,3,4> &m, 
++                    const Eigen::Matrix<double,4,1> &trans, 
++                    const Eigen::Quaternion<double> &qrot);
+ 
+ 
+   /// Projection matrix from Frame to World coordinates: [R t]
+   ///
+-  void transformF2W(Eigen3::Matrix<double,3,4> &m, 
+-                    const Eigen3::Matrix<double,4,1> &trans, 
+-                    const Eigen3::Quaternion<double> &qrot);
++  void transformF2W(Eigen::Matrix<double,3,4> &m, 
++                    const Eigen::Matrix<double,4,1> &trans, 
++                    const Eigen::Quaternion<double> &qrot);
+ 
+ 
+   /// Transform of one node in another's coords
+   ///
+-  void transformN2N(Eigen3::Matrix<double,4,1> &trans, 
+-                    Eigen3::Quaternion<double> &qrot,
++  void transformN2N(Eigen::Matrix<double,4,1> &trans, 
++                    Eigen::Quaternion<double> &qrot,
+                     Node &nd0, Node &nd1);
+ 
+ } // sba namespace
+diff --git a/sba/include/sba/proj.h b/sba/include/sba/proj.h
+index 34d4ef8..c47e666 100644
+--- a/sba/include/sba/proj.h
++++ b/sba/include/sba/proj.h
+@@ -5,10 +5,10 @@
+ #define EIGEN_USE_NEW_STDVECTOR
+ #endif // EIGEN_USE_NEW_STDVECTOR
+ 
+-#include <Eigen3/Core>
+-#include <Eigen3/Geometry>
+-#include <Eigen3/LU>
+-#include <Eigen3/StdVector>
++#include <Eigen/Core>
++#include <Eigen/Geometry>
++#include <Eigen/LU>
++#include <Eigen/StdVector>
+ #include <map>
+ 
+ #include <sba/node.h>
+@@ -30,26 +30,26 @@ namespace sba
+     }
+ 
+     /// Point-to-point Hessian (JpT*Jp).
+-    Eigen3::Matrix<double,3,3> Hpp;
++    Eigen::Matrix<double,3,3> Hpp;
+       
+     /// Point-to-camera Hessian (JpT*Jc)
+-    Eigen3::Matrix<double,3,6> Hpc;
++    Eigen::Matrix<double,3,6> Hpc;
+       
+     /// Camera-to-camera Hessian (JcT*Jc)
+-    Eigen3::Matrix<double,6,6> Hcc;
++    Eigen::Matrix<double,6,6> Hcc;
+       
+     /// The B matrix with respect to points (JpT*Err)
+-    Eigen3::Matrix<double,3,1> Bp;
++    Eigen::Matrix<double,3,1> Bp;
+       
+     /// Another matrix with respect to cameras (JcT*Err)
+-    Eigen3::Matrix<double,6,1> JcTE;
++    Eigen::Matrix<double,6,1> JcTE;
+   };
+ 
+   class Proj; // Forward reference.
+   
+   /// Obnoxiously long type def for the map type that holds the point 
+   /// projections in tracks.
+-  typedef std::map<const int, Proj, std::less<int>, Eigen3::aligned_allocator<Proj> > ProjMap;
++  typedef std::map<const int, Proj, std::less<int>, Eigen::aligned_allocator<Proj> > ProjMap;
+ 
+   /// \brief Proj holds a projection measurement of a point onto a
+   /// frame. They are a repository for the link between the frame and
+@@ -63,12 +63,12 @@ namespace sba
+       /// \brief General & stereo constructor. To construct a monocular 
+       /// projection, either use stereo = false or the other constructor.
+       /// NOTE: sets the projection to be valid.
+-      Proj(int ci, Eigen3::Vector3d &q, bool stereo = true);
++      Proj(int ci, Eigen::Vector3d &q, bool stereo = true);
+       
+       /// \brief Monocular constructor. To construct a stereo projection, 
+       /// use other constructor.
+       /// NOTE: sets the projection to be valid.
+-      Proj(int ci, Eigen3::Vector2d &q);
++      Proj(int ci, Eigen::Vector2d &q);
+       
+       /// \brief Default constructor. Initializes to default values, 
+       /// kp = <0 0 0> and ndi = <0>. Also sets the projection to be invalid.
+@@ -78,10 +78,10 @@ namespace sba
+       int ndi;
+       
+       /// Keypoint, u,v,u-d vector
+-      Eigen3::Vector3d kp;
++      Eigen::Vector3d kp;
+       
+       /// Reprojection error.
+-      Eigen3::Vector3d err;
++      Eigen::Vector3d err;
+       
+       /// Whether the projection is Stereo (True) or Monocular (False).
+       bool stereo;
+@@ -121,7 +121,7 @@ namespace sba
+       
+       /// Point-to-camera matrix (HpcT*Hpp^-1)
+       /// Need to save this
+-      Eigen3::Matrix<double,6,3> Tpc;
++      Eigen::Matrix<double,6,3> Tpc;
+       
+       /// valid or not (could be out of bounds)
+       bool isValid;
+@@ -134,16 +134,16 @@ namespace sba
+       bool useCovar;
+       
+       /// Covariance matrix for cost calculation.
+-      Eigen3::Matrix<double,3,3> covarmat;
++      Eigen::Matrix<double,3,3> covarmat;
+       
+       /// Whether this is a point-plane match (true) or a point-point match (false).
+       bool pointPlane;
+       
+       /// Normal for point-plane projections
+-      Eigen3::Vector3d plane_normal;
++      Eigen::Vector3d plane_normal;
+       
+       /// Point for point-plane projections
+-      Eigen3::Vector3d plane_point;
++      Eigen::Vector3d plane_point;
+       
+       /// Point-plane match point index in SBA.
+       int plane_point_index;
+@@ -152,14 +152,14 @@ namespace sba
+       int plane_node_index;
+       
+       /// Original normal in #plane_node_index coordinate's frame.
+-      Eigen3::Vector3d plane_local_normal;
++      Eigen::Vector3d plane_local_normal;
+ 
+       /// \brief Set the covariance matrix to use for cost calculation.
+       /// Without the covariance matrix, cost is calculated by:
+       /// cost = ||err||
+       /// With a covariance matrix, the cost is calculated by:
+       /// cost = (err)T*covar*(err)
+-      void setCovariance(const Eigen3::Matrix3d &covar);
++      void setCovariance(const Eigen::Matrix3d &covar);
+       
+       /// Clear the covariance matrix and no longer use it.
+       void clearCovariance();
+diff --git a/sba/include/sba/read_spa.h b/sba/include/sba/read_spa.h
+index 0d9bd38..f9b029a 100644
+--- a/sba/include/sba/read_spa.h
++++ b/sba/include/sba/read_spa.h
+@@ -41,8 +41,8 @@
+ #define EIGEN_USE_NEW_STDVECTOR
+ #endif // EIGEN_USE_NEW_STDVECTOR
+ 
+-#define EIGEN_DEFAULT_IO_FORMAT Eigen3::IOFormat(10)
+-#include <Eigen3/Eigen>
++#define EIGEN_DEFAULT_IO_FORMAT Eigen::IOFormat(10)
++#include <Eigen/Eigen>
+ #include <vector>
+ 
+ struct tinfo
+@@ -57,17 +57,17 @@ struct tinfo
+ int 
+ ReadSPAFile(char *fin,          // input file
+             // node translation
+-            std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ntrans,
++            std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ntrans,
+             // node rotation
+-            std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > &nqrot,
++            std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > &nqrot,
+             // constraint indices
+-            std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > &cind,
++            std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > &cind,
+             // constraint local translation 
+-            std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ctrans,
++            std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ctrans,
+             // constraint local rotation as quaternion
+-            std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > &cqrot,
++            std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > &cqrot,
+             // constraint covariance
+-            std::vector< Eigen3::Matrix<double,6,6>, Eigen3::aligned_allocator<Eigen3::Matrix<double,6,6> > > &cvar,
++            std::vector< Eigen::Matrix<double,6,6>, Eigen::aligned_allocator<Eigen::Matrix<double,6,6> > > &cvar,
+             // track info: point projections, see format description in IntelSeattle files
+             std::vector<struct tinfo> &tracks
+   );
+@@ -75,19 +75,19 @@ ReadSPAFile(char *fin,          // input file
+ int 
+ ReadSPA2dFile(char *fin,          // input file
+             // node translation
+-            std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > &ntrans,
++            std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > &ntrans,
+             // node rotation
+             std::vector< double > &nqrot,
+             // constraint indices
+-            std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > &cind,
++            std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > &cind,
+             // constraint local translation 
+-            std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > &ctrans,
++            std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > &ctrans,
+             // constraint local rotation as quaternion
+             std::vector< double > &cqrot,
+             // constraint covariance
+-            std::vector< Eigen3::Matrix<double,3,3>, Eigen3::aligned_allocator<Eigen3::Matrix<double,3,3> > > &cvar,
++            std::vector< Eigen::Matrix<double,3,3>, Eigen::aligned_allocator<Eigen::Matrix<double,3,3> > > &cvar,
+             // scan points
+-            std::vector< std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > > &scans
++            std::vector< std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > > &scans
+   );
+ 
+ #endif
+diff --git a/sba/include/sba/sba.h b/sba/include/sba/sba.h
+index d68facd..86c2417 100644
+--- a/sba/include/sba/sba.h
++++ b/sba/include/sba/sba.h
+@@ -45,13 +45,13 @@
+ 
+ #include <stdio.h>
+ #include <iostream>
+-#include <Eigen3/Core>
+-#include <Eigen3/Geometry>
+-#include <Eigen3/LU>
+-#include <Eigen3/StdVector>
++#include <Eigen/Core>
++#include <Eigen/Geometry>
++#include <Eigen/LU>
++#include <Eigen/StdVector>
+ #include <vector>
+ #include <algorithm>
+-#include <Eigen3/Cholesky>
++#include <Eigen/Cholesky>
+ 
+ #include <sba/node.h>
+ #include <sba/proj.h>
+@@ -86,13 +86,13 @@ namespace sba
+           verbose = 1; huber = 0.0; }
+ 
+       /// \brief Set of nodes (camera frames) for SBA system, indexed by node number.
+-      std::vector<Node, Eigen3::aligned_allocator<Node> > nodes;
++      std::vector<Node, Eigen::aligned_allocator<Node> > nodes;
+ 
+       /// \brief Number of fixed nodes (nodes with known poses) from the first node.
+       int nFixed;               
+ 
+       /// \brief Set of tracks for each point P (projections onto camera frames).
+-      std::vector<Track, Eigen3::aligned_allocator<Track> > tracks;
++      std::vector<Track, Eigen::aligned_allocator<Track> > tracks;
+ 
+       /// \brief Return total number of projections
+       int countProjs();
+@@ -168,8 +168,8 @@ namespace sba
+       /// baseline and other camera parameters.
+       /// \param isFixed Whether this camera is fixed in space or not, for sba.
+       /// \return the index of the node added.
+-      int addNode(Eigen3::Matrix<double,4,1> &trans, 
+-                      Eigen3::Quaternion<double> &qrot,
++      int addNode(Eigen::Matrix<double,4,1> &trans, 
++                      Eigen::Quaternion<double> &qrot,
+                       const fc::CamParams &cp,
+                       bool isFixed = false);
+ 
+@@ -189,7 +189,7 @@ namespace sba
+       /// Should only fail if the projection is a duplicate of an existing one
+       /// with a different keypoint (i.e., same point projected to 2 locations
+       /// in an image).
+-      bool addProj(int ci, int pi, Eigen3::Vector3d &q, bool stereo=true);
++      bool addProj(int ci, int pi, Eigen::Vector3d &q, bool stereo=true);
+       
+       /// \brief Add a projection between point and camera, in setting up the 
+       /// system.
+@@ -200,7 +200,7 @@ namespace sba
+       /// Should only fail if the projection is a duplicate of an existing one
+       /// with a different keypoint (i.e., same point projected to 2 locations
+       /// in an image).
+-      bool addMonoProj(int ci, int pi, Eigen3::Vector2d &q);
++      bool addMonoProj(int ci, int pi, Eigen::Vector2d &q);
+       
+       /// \brief Add a projection between point and camera, in setting up the 
+       /// system.
+@@ -211,7 +211,7 @@ namespace sba
+       /// Should only fail if the projection is a duplicate of an existing one
+       /// with a different keypoint (i.e., same point projected to 2 locations
+       /// in an image).
+-      bool addStereoProj(int ci, int pi, Eigen3::Vector3d &q);
++      bool addStereoProj(int ci, int pi, Eigen::Vector3d &q);
+       
+       /// \brief Sets the covariance matrix of a projection.
+       /// \param ci camera/node index (same as in nodes structure).
+@@ -219,7 +219,7 @@ namespace sba
+       /// \param covar 3x3 covariance matrix that affects the cost of the
+       /// projection. Instead of the cost being ||err||, the cost is now
+       /// (err)T*covar*(err).
+-      void setProjCovariance(int ci, int pi, Eigen3::Matrix3d &covar);
++      void setProjCovariance(int ci, int pi, Eigen::Matrix3d &covar);
+       
+       /// \brief Adds a pair of point-plane projection matches. 
+       /// Assumes the points have already been added to the system with 
+@@ -231,14 +231,14 @@ namespace sba
+       /// \param ci1 Camera index of the second point in the match.
+       /// \param pi1 Point index of the second point in the match.
+       /// \param normal1 3D normal for the second point in camera1's coordinate frame.
+-      void addPointPlaneMatch(int ci0, int pi0, Eigen3::Vector3d normal0, int ci1, int pi1, Eigen3::Vector3d normal1);
++      void addPointPlaneMatch(int ci0, int pi0, Eigen::Vector3d normal0, int ci1, int pi1, Eigen::Vector3d normal1);
+       
+       /// \brief Update normals in point-plane matches, if any.
+       void updateNormals();
+       
+       /// linear system matrix and vector
+-      Eigen3::MatrixXd A;
+-      Eigen3::VectorXd B;
++      Eigen::MatrixXd A;
++      Eigen::VectorXd B;
+ 
+       /// sparse connectivity matrix
+       /// for each node, holds vector of connecting nodes
+@@ -279,13 +279,13 @@ namespace sba
+       void tsplit(int tri, int len);
+       
+       /// Storage for old points, for checking LM step and reverting 
+-      std::vector<Point, Eigen3::aligned_allocator<Point> > oldpoints;
++      std::vector<Point, Eigen::aligned_allocator<Point> > oldpoints;
+       
+       /// variables for each track
+-      std::vector<Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > tps;
++      std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > tps;
+ 
+       /// storage for Jacobian products
+-        std::vector<JacobProds, Eigen3::aligned_allocator<JacobProds> > jps;
++        std::vector<JacobProds, Eigen::aligned_allocator<JacobProds> > jps;
+ 
+     };
+ 
+@@ -306,13 +306,13 @@ namespace sba
+     int nd1;
+ 
+     /// Mean vector, quaternion (inverse) and precision matrix for this constraint
+-    Eigen3::Vector3d tmean;
+-    Eigen3::Quaternion<double> qpmean;
+-    Eigen3::Matrix<double,6,6> prec;
++    Eigen::Vector3d tmean;
++    Eigen::Quaternion<double> qpmean;
++    Eigen::Matrix<double,6,6> prec;
+ 
+ 
+     /// error
+-    Eigen3::Matrix<double,6,1> err;
++    Eigen::Matrix<double,6,1> err;
+     /// calculates projection error and stores it in <err>
+     inline double calcErr(const Node &nd0, const Node &nd1);
+ 
+@@ -321,7 +321,7 @@ namespace sba
+ 
+ 
+     /// jacobian with respect to frames; uses dR'/dq from Node calculation
+-    Eigen3::Matrix<double,6,6> J0,J0t,J1,J1t;
++    Eigen::Matrix<double,6,6> J0,J0t,J1,J1t;
+ 
+     /// scaling factor for quaternion derivatives relative to translational ones;
+     /// not sure if this is needed, it's close to 1.0
+@@ -336,7 +336,7 @@ namespace sba
+     /// d(px/pz)/du = [ pz dpx/du - px dpz/du ] / pz^2,
+     /// works for all variables
+     ///
+-    void setJacobians(std::vector<Node,Eigen3::aligned_allocator<Node> > &nodes);
++    void setJacobians(std::vector<Node,Eigen::aligned_allocator<Node> > &nodes);
+ 
+     /// valid or not (could be out of bounds)
+     bool isValid;
+@@ -373,14 +373,14 @@ namespace sba
+ 
+     /// jacobian with respect to reference frame:
+     ///   -2(t1 - t0)
+-    Eigen3::Vector3d J0;
++    Eigen::Vector3d J0;
+ 
+     /// jacobian with respect to second frame:
+     ///    2(t1 - t0)
+-    Eigen3::Vector3d J1;
++    Eigen::Vector3d J1;
+ 
+     /// jacobians are computed from (ti - tj)^2 - a*kij = 0
+-    void setJacobians(std::vector<Node,Eigen3::aligned_allocator<Node> > &nodes);
++    void setJacobians(std::vector<Node,Eigen::aligned_allocator<Node> > &nodes);
+ 
+     /// valid or not (could be out of bounds)
+     bool isValid;
+@@ -403,16 +403,16 @@ namespace sba
+     int nd1, nd2;
+ 
+     /// Mean vector and precision matrix for this constraint
+-    Eigen3::Matrix<double,12,1> mean;
+-    Eigen3::Matrix<double,12,12> prec;
++    Eigen::Matrix<double,12,1> mean;
++    Eigen::Matrix<double,12,12> prec;
+ 
+     /// error
+-    Eigen3::Matrix<double,12,1> err;
++    Eigen::Matrix<double,12,1> err;
+     /// calculates projection error and stores it in <err>
+-    Eigen3::Matrix<double,12,1> calcErr(const Node &nd, const Point &pt);
++    Eigen::Matrix<double,12,1> calcErr(const Node &nd, const Point &pt);
+ 
+     /// Jacobians of 0p1,0p2 with respect to global p0, p1, p2
+-    Eigen3::Matrix<double,6,6> J10, J11, J20, J22;
++    Eigen::Matrix<double,6,6> J10, J11, J20, J22;
+ 
+     /// dpc/dq = dR'/dq [pw-t], in homogeneous form, with q a quaternion param
+     /// 
+@@ -423,11 +423,11 @@ namespace sba
+     /// d(px/pz)/du = [ pz dpx/du - px dpz/du ] / pz^2,
+     /// works for all variables
+     ///
+-    void setJacobians(std::vector<Node,Eigen3::aligned_allocator<Node> > nodes);
++    void setJacobians(std::vector<Node,Eigen::aligned_allocator<Node> > nodes);
+ 
+     /// temp storage for Hpc, Tpc matrices in SBA
+-    Eigen3::Matrix<double,3,6> Hpc;
+-    Eigen3::Matrix<double,6,3> Tpc;
++    Eigen::Matrix<double,3,6> Hpc;
++    Eigen::Matrix<double,6,3> Tpc;
+ 
+     /// valid or not (could be out of bounds)
+     bool isValid;
+@@ -454,8 +454,8 @@ namespace sba
+       /// \param qrot A Quaternion containing the rotatin of the camera.
+       /// \param isFixed Whether this camera is fixed in space or not, for spa.
+       /// \return the index of the node added.
+-      int addNode(Eigen3::Matrix<double,4,1> &trans, 
+-                      Eigen3::Quaternion<double> &qrot,
++      int addNode(Eigen::Matrix<double,4,1> &trans, 
++                      Eigen::Quaternion<double> &qrot,
+                       bool isFixed = false);
+ 
+       /// \brief Adds a pose constraint to the system.
+@@ -466,12 +466,12 @@ namespace sba
+       /// \param prec A 6x6 matrix, precision matrix for this link
+       /// \return true if constraint added, false if nd0 or nd1 not found
+       bool addConstraint(int nd0, int nd1,
+-                        Eigen3::Vector3d &tmean,
+-                        Eigen3::Quaterniond &qpmean,
+-                        Eigen3::Matrix<double,6,6> &prec);
++                        Eigen::Vector3d &tmean,
++                        Eigen::Quaterniond &qpmean,
++                        Eigen::Matrix<double,6,6> &prec);
+ 
+       /// set of nodes (camera frames) for SPA system, indexed by position;
+-      std::vector<Node,Eigen3::aligned_allocator<Node> > nodes;
++      std::vector<Node,Eigen::aligned_allocator<Node> > nodes;
+ 
+       /// set of scale for SPA system, indexed by position;
+       std::vector<double> scales;
+@@ -480,10 +480,10 @@ namespace sba
+       int nFixed;               
+ 
+       /// Set of P2 constraints
+-      std::vector<ConP2,Eigen3::aligned_allocator<ConP2> >  p2cons;
++      std::vector<ConP2,Eigen::aligned_allocator<ConP2> >  p2cons;
+ 
+       /// Set of scale constraints
+-      std::vector<ConScale,Eigen3::aligned_allocator<ConScale> >  scons;
++      std::vector<ConScale,Eigen::aligned_allocator<ConScale> >  scons;
+ 
+       /// local or global angle coordinates
+       bool useLocalAngles;
+@@ -519,19 +519,19 @@ namespace sba
+ 
+       /// Add a constraint between two poses, in a given pose frame.
+       /// <pr> is reference pose, <p0> and <p1> are the pose constraints.
+-      void addConstraint(int pr, int p0, int p1, Eigen3::Matrix<double,12,1> &mean, Eigen3::Matrix<double,12,12> &prec);
++      void addConstraint(int pr, int p0, int p1, Eigen::Matrix<double,12,1> &mean, Eigen::Matrix<double,12,12> &prec);
+ 
+       /// linear system matrix and vector
+-      Eigen3::MatrixXd A;
+-      Eigen3::VectorXd B;
++      Eigen::MatrixXd A;
++      Eigen::VectorXd B;
+ 
+       /// sparse matrix object
+       CSparse csp;
+ 
+       /// 6DOF pose as a unit quaternion and translation vector, saving
+       /// for LM step
+-      Eigen3::Matrix<double,4,1> oldtrans; // homogeneous coordinates, last element is 1.0
+-      Eigen3::Matrix<double,4,1> oldqrot;  // this is the quaternion as coefficients, note xyzw order
++      Eigen::Matrix<double,4,1> oldtrans; // homogeneous coordinates, last element is 1.0
++      Eigen::Matrix<double,4,1> oldqrot;  // this is the quaternion as coefficients, note xyzw order
+ 
+     };
+ 
+diff --git a/sba/include/sba/sba_file_io.h b/sba/include/sba/sba_file_io.h
+index 1ea19f2..b196edd 100644
+--- a/sba/include/sba/sba_file_io.h
++++ b/sba/include/sba/sba_file_io.h
+@@ -5,9 +5,9 @@
+ #define EIGEN_USE_NEW_STDVECTOR
+ #endif // EIGEN_USE_NEW_STDVECTOR
+ 
+-//#define EIGEN_DEFAULT_IO_FORMAT Eigen3::IOFormat(10)
++//#define EIGEN_DEFAULT_IO_FORMAT Eigen::IOFormat(10)
+ 
+-#include <Eigen3/Eigen>
++#include <Eigen/Eigen>
+ #include <vector>
+ #include <iostream>
+ #include <fstream>
+@@ -15,7 +15,7 @@
+ 
+ #include "sba/sba.h"
+ 
+-namespace Eigen3
++namespace Eigen
+ {
+   typedef Matrix<double,11,1> Vector11d;
+   typedef Matrix<double,5,1>  Vector5d;
+@@ -51,12 +51,12 @@ namespace sba
+   /** \brief A low-level parser for bundler files. */
+   int 
+   ParseBundlerFile(const char *fin,	// input file
+-		  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &camp, // cam params <f d1 d2>
+-		  std::vector< Eigen3::Matrix3d, Eigen3::aligned_allocator<Eigen3::Matrix3d> > &camR, // cam rotation matrix
+-		  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &camt, // cam translation
+-		  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ptp, // point position
+-		  std::vector< Eigen3::Vector3i, Eigen3::aligned_allocator<Eigen3::Vector3i> > &ptc, // point color
+-		  std::vector< std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > > &ptt // point tracks - each vector is <camera_index u v>
++		  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &camp, // cam params <f d1 d2>
++		  std::vector< Eigen::Matrix3d, Eigen::aligned_allocator<Eigen::Matrix3d> > &camR, // cam rotation matrix
++		  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &camt, // cam translation
++		  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ptp, // point position
++		  std::vector< Eigen::Vector3i, Eigen::aligned_allocator<Eigen::Vector3i> > &ptc, // point color
++		  std::vector< std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > > &ptt // point tracks - each vector is <camera_index u v>
+     );
+ 
+   /** \brief Reads bundle adjustment data from a graph-type file to an instance of SysSBA.
+@@ -70,11 +70,11 @@ namespace sba
+   /** \brief A low-level parser for graph files. */
+   int 
+   ParseGraphFile(const char *fin,	// input file
+-		  std::vector< Eigen3::Vector5d, Eigen3::aligned_allocator<Eigen3::Vector5d> > &camps, // cam params <fx fy cx cy>
+-		  std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > &camqs, // cam rotation matrix
+-		  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &camts, // cam translation
+-		  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ptps, // point position
+-		  std::vector< std::vector< Eigen3::Vector11d, Eigen3::aligned_allocator<Eigen3::Vector11d> > > &ptts // point tracks - each vector is <camera_index u v>
++		  std::vector< Eigen::Vector5d, Eigen::aligned_allocator<Eigen::Vector5d> > &camps, // cam params <fx fy cx cy>
++		  std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > &camqs, // cam rotation matrix
++		  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &camts, // cam translation
++		  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ptps, // point position
++		  std::vector< std::vector< Eigen::Vector11d, Eigen::aligned_allocator<Eigen::Vector11d> > > &ptts // point tracks - each vector is <camera_index u v>
+     );
+ 
+ 
+@@ -103,12 +103,12 @@ namespace sba
+   /** \brief A low-level parser for graph files. */
+   int
+   ParseSPAGraphFile(const char *fin, // input file
+-   std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ntrans, // node translation
+-   std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > &nqrot,  // node rotation
+-   std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > &cind,   // constraint indices
+-   std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ctrans, // constraint local translation 
+-   std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > &cqrot,  // constraint local rotation as quaternion
+-   std::vector< Eigen3::Matrix<double,6,6>, Eigen3::aligned_allocator<Eigen3::Matrix<double,6,6> > > &cvar); // constraint covariance
++   std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ntrans, // node translation
++   std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > &nqrot,  // node rotation
++   std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > &cind,   // constraint indices
++   std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ctrans, // constraint local translation 
++   std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > &cqrot,  // constraint local rotation as quaternion
++   std::vector< Eigen::Matrix<double,6,6>, Eigen::aligned_allocator<Eigen::Matrix<double,6,6> > > &cvar); // constraint covariance
+ 
+ }; // namespace SBA
+ 
+diff --git a/sba/include/sba/sba_setup.h b/sba/include/sba/sba_setup.h
+index 8219127..128cde0 100644
+--- a/sba/include/sba/sba_setup.h
++++ b/sba/include/sba/sba_setup.h
+@@ -41,7 +41,7 @@
+ 
+ #include "sba/sba.h"
+ #include "sba/spa2d.h"
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+@@ -56,13 +56,13 @@ using namespace std;
+ long long utime();
+ // set up spiral system
+ void 
+-spiral_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > &cps,
++spiral_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > &cps,
+ 	     double s_near, double s_far,
+ 	     double ptsize, double kfang, double initang, double cycles, 
+ 	     double inoise, double pnoise, double qnoise);
+ 
+ void
+-sphere_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>, Eigen3::aligned_allocator<Matrix<double,6,1> > > &cps,
++sphere_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>, Eigen::aligned_allocator<Matrix<double,6,1> > > &cps,
+ 	     int ncams,		// number of cameras
+ 	     int ncpts,		// number of new pts per camera
+ 	     int nccs,		// number of camera connections per camera
+@@ -71,7 +71,7 @@ sphere_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>, Eigen3::a
+ 
+ void
+ spa_spiral_setup(SysSPA &spa, bool use_cross_links,
+-                 vector<Matrix<double,6,1>, Eigen3::aligned_allocator<Matrix<double,6,1> > > &cps,
++                 vector<Matrix<double,6,1>, Eigen::aligned_allocator<Matrix<double,6,1> > > &cps,
+                  Matrix<double,6,6> prec, Matrix<double,6,6> vprec,
+                  Matrix<double,6,6> a10prec, Matrix<double,6,6> a15prec,
+                  double kfang, double initang, double cycles, 
+@@ -81,7 +81,7 @@ spa_spiral_setup(SysSPA &spa, bool use_cross_links,
+ 
+ void
+ spa2d_spiral_setup(SysSPA2d &spa, 
+-                 vector<Matrix<double,3,1>, Eigen3::aligned_allocator<Matrix<double,3,1> > > &cps,
++                 vector<Matrix<double,3,1>, Eigen::aligned_allocator<Matrix<double,3,1> > > &cps,
+                  Matrix<double,3,3> prec, Matrix<double,3,3> vprec,
+                  Matrix<double,3,3> a10prec, Matrix<double,3,3> a15prec,
+                  double kfang, double initang, double cycles, 
+diff --git a/sba/include/sba/spa2d.h b/sba/include/sba/spa2d.h
+index f565e7e..07bc2a8 100644
+--- a/sba/include/sba/spa2d.h
++++ b/sba/include/sba/spa2d.h
+@@ -45,13 +45,13 @@
+ 
+ #include <stdio.h>
+ #include <iostream>
+-#include <Eigen3/Core>
+-#include <Eigen3/Geometry>
+-#include <Eigen3/LU>
++#include <Eigen/Core>
++#include <Eigen/Geometry>
++#include <Eigen/LU>
+ #ifndef EIGEN_USE_NEW_STDVECTOR
+ #define EIGEN_USE_NEW_STDVECTOR
+ #endif
+-#include <Eigen3/StdVector>
++#include <Eigen/StdVector>
+ #include <vector>
+ 
+ // sparse Cholesky
+@@ -100,7 +100,7 @@ namespace sba
+     int nodeId;
+ 
+     /// 6DOF pose as a unit quaternion and translation vector
+-    Eigen3::Matrix<double,3,1> trans;    // homogeneous coordinates, last element is 1.0
++    Eigen::Matrix<double,3,1> trans;    // homogeneous coordinates, last element is 1.0
+     double arot;                // angle in radians, normalized to [-pi,+pi]
+     /// Normalize to [-pi,+pi]
+     inline void normArot()
+@@ -110,17 +110,17 @@ namespace sba
+     }
+ 
+     /// Resultant transform from world to node coordinates;
+-    Eigen3::Matrix<double,2,3> w2n;
++    Eigen::Matrix<double,2,3> w2n;
+     void setTransform();
+ 
+     /// Covariance matrix, 3x3.  Variables are [trans,rot], with the
+     /// rotational part being the x parameter of the unit
+     /// quaternion
+-    //    Eigen3::Matrix<double,3,3> covar;
++    //    Eigen::Matrix<double,3,3> covar;
+ 
+     /// Derivatives of the rotation matrix transpose wrt quaternion xyz, used for
+     /// calculating Jacobian wrt pose of a projection.
+-    Eigen3::Matrix2d dRdx;
++    Eigen::Matrix2d dRdx;
+ 
+     void setDr();               // set local angle derivatives
+ 
+@@ -129,7 +129,7 @@ namespace sba
+ 
+     /// 3DOF pose as a unit quaternion and translation vector, saving
+     /// for LM step
+-    Eigen3::Matrix<double,3,1> oldtrans; // homogeneous coordinates, last element is 1.0
++    Eigen::Matrix<double,3,1> oldtrans; // homogeneous coordinates, last element is 1.0
+     double oldarot;             // angle
+   };
+ 
+@@ -150,12 +150,12 @@ namespace sba
+     int nd1;
+ 
+     /// Mean vector, quaternion (inverse) and precision matrix for this constraint
+-    Eigen3::Vector2d tmean;
++    Eigen::Vector2d tmean;
+     double amean;
+-    Eigen3::Matrix<double,3,3> prec;
++    Eigen::Matrix<double,3,3> prec;
+ 
+     /// error
+-    Eigen3::Matrix<double,3,1> err;
++    Eigen::Matrix<double,3,1> err;
+     /// calculates projection error and stores it in <err>
+     inline double calcErr(const Node2d &nd0, const Node2d &nd1);
+ 
+@@ -164,7 +164,7 @@ namespace sba
+ 
+ 
+     /// jacobian with respect to frames; uses dR'/dq from Node2d calculation
+-    Eigen3::Matrix<double,3,3> J0,J0t,J1,J1t;
++    Eigen::Matrix<double,3,3> J0,J0t,J1,J1t;
+ 
+     /// scaling factor for quaternion derivatives relative to translational ones;
+     /// not sure if this is needed, it's close to 1.0
+@@ -179,7 +179,7 @@ namespace sba
+     /// d(px/pz)/du = [ pz dpx/du - px dpz/du ] / pz^2,
+     /// works for all variables
+     ///
+-    void setJacobians(std::vector<Node2d,Eigen3::aligned_allocator<Node2d> > &nodes);
++    void setJacobians(std::vector<Node2d,Eigen::aligned_allocator<Node2d> > &nodes);
+ 
+     /// valid or not (could be out of bounds)
+     bool isValid;
+@@ -211,18 +211,18 @@ namespace sba
+ 
+ 
+       /// set of nodes (camera frames) for SPA system, indexed by position;
+-      std::vector<Node2d,Eigen3::aligned_allocator<Node2d> > nodes;
+-      std::vector<Node2d,Eigen3::aligned_allocator<Node2d> > getNodes()
++      std::vector<Node2d,Eigen::aligned_allocator<Node2d> > nodes;
++      std::vector<Node2d,Eigen::aligned_allocator<Node2d> > getNodes()
+         { return nodes; }
+ 
+       /// set of point scans, corresponding to nodes
+-      std::vector< std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > > scans;
++      std::vector< std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > > scans;
+ 
+       /// Number of fixed nodes
+       int nFixed;               
+ 
+       /// Set of P2 constraints
+-      std::vector<Con2dP2,Eigen3::aligned_allocator<Con2dP2> >  p2cons;
++      std::vector<Con2dP2,Eigen::aligned_allocator<Con2dP2> >  p2cons;
+ 
+       /// calculate the error in the system;
+       ///   if <tcost> is true, just the distance error without weighting
+@@ -260,8 +260,8 @@ namespace sba
+       double sqMinDelta;
+ 
+       /// linear system matrix and vector
+-      Eigen3::MatrixXd A;
+-      Eigen3::VectorXd B;
++      Eigen::MatrixXd A;
++      Eigen::VectorXd B;
+ 
+       /// sparse matrix object
+       CSparse2d csp;
+diff --git a/sba/library.txt b/sba/library.txt
+index 98ef3e8..8fc87f0 100644
+--- a/sba/library.txt
++++ b/sba/library.txt
+@@ -37,6 +37,6 @@ int SysSPA2d::doSPA(int iter, double lambda=1.0e-4)
+ 
+ // return cost and nodes
+ double SysSPA2d::getCost()
+-std::vector<Node2d,Eigen3::aligned_allocator<Node2d> > SysSPA2d::getNodes()
++std::vector<Node2d,Eigen::aligned_allocator<Node2d> > SysSPA2d::getNodes()
+ 
+ 
+diff --git a/sba/makelib.sh b/sba/makelib.sh
+index 510864e..35af604 100755
+--- a/sba/makelib.sh
++++ b/sba/makelib.sh
+@@ -57,6 +57,6 @@ cp Makefile-lib ${DISTDIR}/Makefile
+ 
+ # // return cost and nodes
+ # double SysSPA2d::getCost()
+-# std::vector<Node2d,Eigen3::aligned_allocator<Node2d> > SysSPA2d::getNodes()
++# std::vector<Node2d,Eigen::aligned_allocator<Node2d> > SysSPA2d::getNodes()
+ 
+ 
+diff --git a/sba/manifest.xml b/sba/manifest.xml
+index 689f459..18aa4c0 100644
+--- a/sba/manifest.xml
++++ b/sba/manifest.xml
+@@ -7,7 +7,7 @@
+   <review status="unreviewed" notes=""/>
+   
+   <depend package="roscpp"/>
+-  <depend package="eigen3"/>
++  <depend package="eigen"/>
+   <depend package="suitesparse"/>
+   <depend package="csparse"/>
+   <depend package="bpcg"/>
+diff --git a/sba/src/csparse.cpp b/sba/src/csparse.cpp
+index ae19235..a171624 100644
+--- a/sba/src/csparse.cpp
++++ b/sba/src/csparse.cpp
+@@ -39,7 +39,7 @@
+ #include <stdio.h>
+ #include "sba/csparse.h"
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ 
+ #include <iostream>
+ #include <iomanip>
+diff --git a/sba/src/node.cpp b/sba/src/node.cpp
+index 37443e9..8f255a2 100644
+--- a/sba/src/node.cpp
++++ b/sba/src/node.cpp
+@@ -1,7 +1,7 @@
+ #include <sba/node.h>
+ 
+ using namespace std;
+-using namespace Eigen3;
++using namespace Eigen;
+ 
+ namespace sba
+ {
+@@ -18,7 +18,7 @@ namespace sba
+ 
+   // constant derivative matrices
+   // these are the derivatives of the *inverse* rotation
+-  Eigen3::Matrix3d Node::dRidx, Node::dRidy, Node::dRidz;
++  Eigen::Matrix3d Node::dRidx, Node::dRidy, Node::dRidz;
+ 
+   void Node::initDr()
+   {
+@@ -131,7 +131,7 @@ namespace sba
+       //      std::cout << "[NormRot] qrot end   = " << qrot.transpose() << std::endl;
+   }
+    
+-  void Node::projectMono(const Point& point, Eigen3::Vector3d& proj)
++  void Node::projectMono(const Point& point, Eigen::Vector3d& proj)
+   {
+     Vector2d proj2d;
+     project2im(proj2d, point);
+@@ -139,7 +139,7 @@ namespace sba
+     proj.head<2>() = proj2d;
+   }
+   
+-  void Node::projectStereo(const Point& point, Eigen3::Vector3d& proj)
++  void Node::projectStereo(const Point& point, Eigen::Vector3d& proj)
+   {
+     Vector2d proj2d;
+     Vector3d pc, baseline_vect;
+@@ -154,18 +154,18 @@ namespace sba
+   
+   
+   // transforms
+-  void transformW2F(Eigen3::Matrix<double,3,4> &m, 
+-                    const Eigen3::Matrix<double,4,1> &trans, 
+-                    const Eigen3::Quaternion<double> &qrot)
++  void transformW2F(Eigen::Matrix<double,3,4> &m, 
++                    const Eigen::Matrix<double,4,1> &trans, 
++                    const Eigen::Quaternion<double> &qrot)
+   {
+     m.block<3,3>(0,0) = qrot.toRotationMatrix().transpose();
+     m.col(3).setZero();         // make sure there's no translation
+     m.col(3) = -m*trans;
+   };
+ 
+-  void transformF2W(Eigen3::Matrix<double,3,4> &m, 
+-                    const Eigen3::Matrix<double,4,1> &trans, 
+-                    const Eigen3::Quaternion<double> &qrot)
++  void transformF2W(Eigen::Matrix<double,3,4> &m, 
++                    const Eigen::Matrix<double,4,1> &trans, 
++                    const Eigen::Quaternion<double> &qrot)
+   {
+     m.block<3,3>(0,0) = qrot.toRotationMatrix();
+     m.col(3) = trans.head(3);
+@@ -174,8 +174,8 @@ namespace sba
+ 
+   // returns the local R,t in nd0 that produces nd1
+   // NOTE: returns a postfix rotation; should return a prefix
+-  void transformN2N(Eigen3::Matrix<double,4,1> &trans, 
+-                    Eigen3::Quaternion<double> &qr,
++  void transformN2N(Eigen::Matrix<double,4,1> &trans, 
++                    Eigen::Quaternion<double> &qr,
+                     Node &nd0, Node &nd1)
+   {
+     Matrix<double,3,4> tfm;
+diff --git a/sba/src/nodes/sba_node.cpp b/sba/src/nodes/sba_node.cpp
+index a638126..88de480 100644
+--- a/sba/src/nodes/sba_node.cpp
++++ b/sba/src/nodes/sba_node.cpp
+@@ -116,7 +116,7 @@ void SBANode::addProj(const sba::Projection& msg)
+   Vector3d keypoint(msg.u, msg.v, msg.d);
+   bool stereo = msg.stereo;
+   bool usecovariance = msg.usecovariance;
+-  Eigen3::Matrix3d covariance;
++  Eigen::Matrix3d covariance;
+   covariance << msg.covariance[0], msg.covariance[1], msg.covariance[2],
+                 msg.covariance[3], msg.covariance[4], msg.covariance[5],
+                 msg.covariance[6], msg.covariance[7], msg.covariance[8];
+diff --git a/sba/src/proj.cpp b/sba/src/proj.cpp
+index a36dbef..f50ebcb 100644
+--- a/sba/src/proj.cpp
++++ b/sba/src/proj.cpp
+@@ -2,11 +2,11 @@
+ 
+ namespace sba
+ {
+-  Proj::Proj(int ci, Eigen3::Vector3d &q, bool stereo)
++  Proj::Proj(int ci, Eigen::Vector3d &q, bool stereo)
+       : ndi(ci), kp(q), stereo(stereo), 
+         isValid(true), useCovar(false), pointPlane(false) {}
+       
+-  Proj::Proj(int ci, Eigen3::Vector2d &q) 
++  Proj::Proj(int ci, Eigen::Vector2d &q) 
+       : ndi(ci), kp(q(0), q(1), 0), 
+         stereo(false), isValid(true), useCovar(false), pointPlane(false) {}
+   
+@@ -46,7 +46,7 @@ namespace sba
+       return err.head<2>().squaredNorm();
+   }
+   
+-  void Proj::setCovariance(const Eigen3::Matrix3d &covar)
++  void Proj::setCovariance(const Eigen::Matrix3d &covar)
+   {
+     useCovar = true;
+     covarmat = covar;
+@@ -60,13 +60,13 @@ namespace sba
+   void Proj::setJacobiansMono_(const Node &nd, const Point &pt, JacobProds *jpp)
+   {
+     // first get the world point in camera coords
+-    Eigen3::Matrix<double,3,1> pc = nd.w2n * pt;
++    Eigen::Matrix<double,3,1> pc = nd.w2n * pt;
+ 
+     /// jacobian with respect to frame; uses dR'/dq from Node calculation
+-    Eigen3::Matrix<double,2,6> jacc;
++    Eigen::Matrix<double,2,6> jacc;
+     
+     /// jacobian with respect to point
+-    Eigen3::Matrix<double,2,3> jacp;
++    Eigen::Matrix<double,2,3> jacp;
+ 
+     // Jacobians wrt camera parameters
+     // set d(quat-x) values [ pz*dpx/dx - px*dpz/dx ] / pz^2
+@@ -81,13 +81,13 @@ namespace sba
+     // scale quaternion derivative to match the translational ones
+     double ipz2fxq = qScale*ipz2fx;
+     double ipz2fyq = qScale*ipz2fy;
+-    Eigen3::Matrix<double,3,1> pwt;
++    Eigen::Matrix<double,3,1> pwt;
+ 
+     // check for local vars
+     pwt = (pt-nd.trans).head<3>(); // transform translations, use differential rotation
+ 
+     // dx
+-    Eigen3::Matrix<double,3,1> dp = nd.dRdx * pwt; // dR'/dq * [pw - t]
++    Eigen::Matrix<double,3,1> dp = nd.dRdx * pwt; // dR'/dq * [pw - t]
+     jacc(0,3) = (pz*dp(0) - px*dp(2))*ipz2fxq;
+     jacc(1,3) = (pz*dp(1) - py*dp(2))*ipz2fyq;
+     // dy
+@@ -142,14 +142,14 @@ namespace sba
+   // we should do something about negative Z
+   double Proj::calcErrMono_(const Node &nd, const Point &pt, double huber)
+   {
+-    Eigen3::Vector3d p1 = nd.w2i * pt; err = p1.head(2)/p1(2); 
++    Eigen::Vector3d p1 = nd.w2i * pt; err = p1.head(2)/p1(2); 
+     if (p1(2) <= 0.0) 
+     {
+ #ifdef DEBUG
+       printf("[CalcErr] negative Z! Node %d \n",ndi);
+       if (isnan(err[0]) || isnan(err[1]) ) printf("[CalcErr] NaN!\n"); 
+ #endif
+-      err = Eigen3::Vector3d(0.0,0.0,0.0);
++      err = Eigen::Vector3d(0.0,0.0,0.0);
+       return 0.0;
+     }
+     err -= kp;
+@@ -186,13 +186,13 @@ namespace sba
+   void Proj::setJacobiansStereo_(const Node &nd, const Point &pt, JacobProds *jpp)
+   {
+     // first get the world point in camera coords
+-    Eigen3::Matrix<double,3,1> pc = nd.w2n * pt;
++    Eigen::Matrix<double,3,1> pc = nd.w2n * pt;
+ 
+     /// jacobian with respect to point
+-    Eigen3::Matrix<double,3,3> jacp;
++    Eigen::Matrix<double,3,3> jacp;
+     
+     /// jacobian with respect to frame; uses dR'/dq from Node calculation
+-    Eigen3::Matrix<double,3,6> jacc;
++    Eigen::Matrix<double,3,6> jacc;
+ 
+     // Jacobians wrt camera parameters
+     // set d(quat-x) values [ pz*dpx/dx - px*dpz/dx ] / pz^2
+@@ -208,13 +208,13 @@ namespace sba
+     // scale quaternion derivative to match the translational ones
+     double ipz2fxq = qScale*ipz2fx;
+     double ipz2fyq = qScale*ipz2fy;
+-    Eigen3::Matrix<double,3,1> pwt;
++    Eigen::Matrix<double,3,1> pwt;
+ 
+     // check for local vars
+     pwt = (pt-nd.trans).head(3); // transform translations, use differential rotation
+ 
+     // dx
+-    Eigen3::Matrix<double,3,1> dp = nd.dRdx * pwt; // dR'/dq * [pw - t]
++    Eigen::Matrix<double,3,1> dp = nd.dRdx * pwt; // dR'/dq * [pw - t]
+     jacc(0,3) = (pz*dp(0) - px*dp(2))*ipz2fxq;
+     jacc(1,3) = (pz*dp(1) - py*dp(2))*ipz2fyq;
+     jacc(2,3) = (pz*dp(0) - (px-b)*dp(2))*ipz2fxq; // right image px
+@@ -283,23 +283,23 @@ namespace sba
+   // we should do something about negative Z
+   double Proj::calcErrStereo_(const Node &nd, const Point &pt, double huber)
+   { 
+-    Eigen3::Vector3d p1 = nd.w2i * pt; 
+-    Eigen3::Vector3d p2 = nd.w2n * pt; 
+-    Eigen3::Vector3d pb(nd.baseline,0,0);
++    Eigen::Vector3d p1 = nd.w2i * pt; 
++    Eigen::Vector3d p2 = nd.w2n * pt; 
++    Eigen::Vector3d pb(nd.baseline,0,0);
+     
+     // TODO: Clean this up a bit. 
+     if (pointPlane)
+     {
+       // Project point onto plane.
+-      Eigen3::Vector3d w = pt.head<3>()-plane_point;
++      Eigen::Vector3d w = pt.head<3>()-plane_point;
+ 
+       //printf("w: %f %f %f\n", w.x(), w.y(), w.z());
+-      //Eigen3::Vector3d projpt = pt.head<3>()+(w.dot(plane_normal))*plane_normal;
+-      Eigen3::Vector3d projpt = plane_point+(w.dot(plane_normal))*plane_normal;
+-      //      Eigen3::Vector3d projpt = pt.head<3>()+(w.dot(plane_normal))*plane_normal;
++      //Eigen::Vector3d projpt = pt.head<3>()+(w.dot(plane_normal))*plane_normal;
++      Eigen::Vector3d projpt = plane_point+(w.dot(plane_normal))*plane_normal;
++      //      Eigen::Vector3d projpt = pt.head<3>()+(w.dot(plane_normal))*plane_normal;
+       //printf("[Proj] Distance to plane: %f\n", w.dot(plane_normal));
+-      p1 = nd.w2i*Eigen3::Vector4d(projpt.x(), projpt.y(), projpt.z(), 1.0);
+-      p2 = nd.w2n*Eigen3::Vector4d(projpt.x(), projpt.y(), projpt.z(), 1.0);
++      p1 = nd.w2i*Eigen::Vector4d(projpt.x(), projpt.y(), projpt.z(), 1.0);
++      p2 = nd.w2n*Eigen::Vector4d(projpt.x(), projpt.y(), projpt.z(), 1.0);
+     }
+     
+     double invp1 = 1.0/p1(2);
+diff --git a/sba/src/sba.cpp b/sba/src/sba.cpp
+index 9649838..29f3a13 100644
+--- a/sba/src/sba.cpp
++++ b/sba/src/sba.cpp
+@@ -38,7 +38,7 @@
+ 
+ #include "sba/sba.h"
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace std;
+ 
+ //#define DEBUG
+@@ -80,8 +80,8 @@ namespace sba
+   
+   // Adds a node to the system. 
+   // \return the index of the node added.
+-  int SysSBA::addNode(Eigen3::Matrix<double,4,1> &trans, 
+-                      Eigen3::Quaternion<double> &qrot,
++  int SysSBA::addNode(Eigen::Matrix<double,4,1> &trans, 
++                      Eigen::Quaternion<double> &qrot,
+                       const fc::CamParams &cp,
+                       bool isFixed)
+   {
+@@ -112,7 +112,7 @@ namespace sba
+   // <ci> is camera/node index, <pi> point index, <q> is image coordinates.
+   // Stereo is whether the point is stereo or not (true is stereo, false is 
+   // monocular).
+-  bool SysSBA::addProj(int ci, int pi, Eigen3::Vector3d &q, bool stereo)
++  bool SysSBA::addProj(int ci, int pi, Eigen::Vector3d &q, bool stereo)
+   {
+     // NOTE: should check bounds on ci, pi, and prjs
+     // get track
+@@ -127,7 +127,7 @@ namespace sba
+ 
+ #if 0
+     /// NOTE
+-    Eigen3::Matrix3d covar;
++    Eigen::Matrix3d covar;
+     covar.setIdentity();
+     covar(0,0) = 0.4;
+     covar(1,1) = 0.4;
+@@ -142,7 +142,7 @@ namespace sba
+   // <ci> is camera/node index, <pi> point index, <q> is image coordinates.
+   // This function explicitly sets up a monocular projection. If creating 
+   // projections from existing projections, use addProj().
+-  bool SysSBA::addMonoProj(int ci, int pi, Eigen3::Vector2d &q)
++  bool SysSBA::addMonoProj(int ci, int pi, Eigen::Vector2d &q)
+   {
+     if (tracks[pi].projections.count(ci) > 0)
+     {
+@@ -157,7 +157,7 @@ namespace sba
+   // Add a projection between point and camera, in setting up the system;
+   // <ci> is camera/node index, <pi> point index, <q> is image coordinates.
+   // This function explicitly sets up a stereo projection.
+-  bool SysSBA::addStereoProj(int ci, int pi, Eigen3::Vector3d &q)
++  bool SysSBA::addStereoProj(int ci, int pi, Eigen::Vector3d &q)
+   {
+     if (tracks[pi].projections.count(ci) > 0)
+     {
+@@ -169,7 +169,7 @@ namespace sba
+ 
+ #if 0
+     /// NOTE
+-    Eigen3::Matrix3d covar;
++    Eigen::Matrix3d covar;
+     covar.setIdentity();
+     covar(0,0) = 0.4;
+     covar(1,1) = 0.4;
+@@ -181,14 +181,14 @@ namespace sba
+   }
+   
+   // Sets the covariance matrix of a projection.
+-  void SysSBA::setProjCovariance(int ci, int pi, Eigen3::Matrix3d &covar)
++  void SysSBA::setProjCovariance(int ci, int pi, Eigen::Matrix3d &covar)
+   {
+     // TODO Check if the projection exists instead.
+     tracks[pi].projections[ci].setCovariance(covar);
+   }
+   
+   // Add a point-plane match, forward and backward.
+-  void SysSBA::addPointPlaneMatch(int ci0, int pi0, Eigen3::Vector3d normal0, int ci1, int pi1, Eigen3::Vector3d normal1)
++  void SysSBA::addPointPlaneMatch(int ci0, int pi0, Eigen::Vector3d normal0, int ci1, int pi1, Eigen::Vector3d normal1)
+   {
+     Point pt0 = tracks[pi0].point;
+     Point pt1 = tracks[pi1].point;
+@@ -505,7 +505,7 @@ namespace sba
+   void SysSBA::printStats()
+   {
+     int ncams = nodes.size();
+-    vector<map<int,int>, Eigen3::aligned_allocator<map<int,int> > > conns; // connections between cameras - key is camera, val is count
++    vector<map<int,int>, Eigen::aligned_allocator<map<int,int> > > conns; // connections between cameras - key is camera, val is count
+     conns.resize(ncams);
+     VectorXi dcnt(ncams);
+     dcnt.setZero(ncams);
+@@ -910,9 +910,9 @@ namespace sba
+     sort(rem.begin(),rem.end()); // sort into ascending order
+     cout << "Finished finding " << rem.size() << " tracks" << endl;
+ 
+-    std::vector<Point, Eigen3::aligned_allocator<Point> > pts;
+-    std::vector< std::vector<MonoProj, Eigen3::aligned_allocator<MonoProj> >, 
+-      Eigen3::aligned_allocator<std::vector<MonoProj, Eigen3::aligned_allocator<MonoProj> > > > trs;
++    std::vector<Point, Eigen::aligned_allocator<Point> > pts;
++    std::vector< std::vector<MonoProj, Eigen::aligned_allocator<MonoProj> >, 
++      Eigen::aligned_allocator<std::vector<MonoProj, Eigen::aligned_allocator<MonoProj> > > > trs;
+ 
+     // delete elements into new vectors
+     int n = 0;                  // index into rem()
+@@ -925,7 +925,7 @@ namespace sba
+             continue;
+           }
+         pts.push_back(points[i]);
+-        vector<MonoProj, Eigen3::aligned_allocator<MonoProj> > &prjs = tracks[i];
++        vector<MonoProj, Eigen::aligned_allocator<MonoProj> > &prjs = tracks[i];
+         /*for (int j=0; j<(int)prjs.size(); j++)
+           prjs[j].pti = ii; */
+         trs.push_back(tracks[i]);
+@@ -1015,7 +1015,7 @@ namespace sba
+     
+     std::sort(remtrs.begin(),remtrs.end()); // sort into ascending order
+ 
+-    std::vector<Track, Eigen3::aligned_allocator<Track> > trs;
++    std::vector<Track, Eigen::aligned_allocator<Track> > trs;
+ 
+     // delete elements into new vectors
+     int n = 0;                  // index into rem()
+@@ -1027,7 +1027,7 @@ namespace sba
+             n++;
+             continue;
+           }
+-        // vector<MonoProj, Eigen3::aligned_allocator<MonoProj> > &prjs = tracks[i];
++        // vector<MonoProj, Eigen::aligned_allocator<MonoProj> > &prjs = tracks[i];
+         /*for (int j=0; j<(int)prjs.size(); j++)
+           prjs[j].pti = ii; */
+         trs.push_back(tracks[i]);
+@@ -1465,7 +1465,7 @@ void SysSBA::setupSys(double sLambda)
+ 
+         // update the cameras
+         int ci = 0;
+-        for(vector<Node, Eigen3::aligned_allocator<Node> >::iterator itr = nodes.begin(); itr != nodes.end(); itr++)
++        for(vector<Node, Eigen::aligned_allocator<Node> >::iterator itr = nodes.begin(); itr != nodes.end(); itr++)
+           {
+             Node &nd = *itr;
+             if (nd.isFixed) continue; // not to be updated
+@@ -1500,7 +1500,7 @@ void SysSBA::setupSys(double sLambda)
+         // update the points (step 7)
+         // loop over tracks
+         int pi = 0;             // point index
+-        for(vector<Track, Eigen3::aligned_allocator<Track> >::iterator itr = tracks.begin();
++        for(vector<Track, Eigen::aligned_allocator<Track> >::iterator itr = tracks.begin();
+             itr != tracks.end(); itr++, pi++)
+           {
+             ProjMap &prjs = itr->projections;
+diff --git a/sba/src/sba_file_io.cpp b/sba/src/sba_file_io.cpp
+index 3dbd2e4..ef6d079 100644
+--- a/sba/src/sba_file_io.cpp
++++ b/sba/src/sba_file_io.cpp
+@@ -2,19 +2,19 @@
+ #include <map>
+ 
+ using namespace sba;
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace frame_common;
+ using namespace std;
+ 
+ int sba::readBundlerFile(const char *filename, SysSBA& sbaout)
+ { 
+     // Create vectors to hold the data from the bundler file. 
+-    vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > camps;	// cam params <f d1 d2>
+-    vector< Matrix3d, Eigen3::aligned_allocator<Matrix3d> > camRs;	// cam rotation matrix
+-    vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > camts;	// cam translation
+-    vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > ptps;	// point position
+-    vector< Vector3i, Eigen3::aligned_allocator<Vector3i> > ptcs;	// point color
+-    vector< vector< Vector4d, Eigen3::aligned_allocator<Vector4d> > > ptts; // point tracks - each vector is <camera_index kp_idex u v>
++    vector< Vector3d, Eigen::aligned_allocator<Vector3d> > camps;	// cam params <f d1 d2>
++    vector< Matrix3d, Eigen::aligned_allocator<Matrix3d> > camRs;	// cam rotation matrix
++    vector< Vector3d, Eigen::aligned_allocator<Vector3d> > camts;	// cam translation
++    vector< Vector3d, Eigen::aligned_allocator<Vector3d> > ptps;	// point position
++    vector< Vector3i, Eigen::aligned_allocator<Vector3i> > ptcs;	// point color
++    vector< vector< Vector4d, Eigen::aligned_allocator<Vector4d> > > ptts; // point tracks - each vector is <camera_index kp_idex u v>
+ 
+     int ret = ParseBundlerFile(filename, camps, camRs, camts, ptps, ptcs, ptts);
+     if (ret < 0)
+@@ -91,7 +91,7 @@ int sba::readBundlerFile(const char *filename, SysSBA& sbaout)
+     for (int i=0; i<npts; i++)
+     {
+       // track
+-      vector<Vector4d, Eigen3::aligned_allocator<Vector4d> > &ptt = ptts[i];
++      vector<Vector4d, Eigen::aligned_allocator<Vector4d> > &ptt = ptts[i];
+       int nprjs = ptt.size();
+       for (int j=0; j<nprjs; j++)
+         {
+@@ -195,12 +195,12 @@ int sba::writeBundlerFile(const char *filename, SysSBA& sbain)
+ } 
+ 
+ int  sba::ParseBundlerFile(const char *fin,	// input file
+-		vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > &camp, // cam params <f d1 d2>
+-		vector< Matrix3d, Eigen3::aligned_allocator<Matrix3d> > &camR, // cam rotation matrix
+-		vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > &camt, // cam translation
+-		vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > &ptp, // point position
+-		vector< Vector3i, Eigen3::aligned_allocator<Vector3i> > &ptc, // point color
+-		vector< vector< Vector4d, Eigen3::aligned_allocator<Vector4d> > > &ptt // point tracks - each vector is <camera_index u v>
++		vector< Vector3d, Eigen::aligned_allocator<Vector3d> > &camp, // cam params <f d1 d2>
++		vector< Matrix3d, Eigen::aligned_allocator<Matrix3d> > &camR, // cam rotation matrix
++		vector< Vector3d, Eigen::aligned_allocator<Vector3d> > &camt, // cam translation
++		vector< Vector3d, Eigen::aligned_allocator<Vector3d> > &ptp, // point position
++		vector< Vector3i, Eigen::aligned_allocator<Vector3i> > &ptc, // point color
++		vector< vector< Vector4d, Eigen::aligned_allocator<Vector4d> > > &ptt // point tracks - each vector is <camera_index u v>
+ 		)
+ {
+     ifstream ifs(fin);
+@@ -289,7 +289,7 @@ int  sba::ParseBundlerFile(const char *fin,	// input file
+ 	  }
+         int nprjs = i1;
+ 
+-        vector<Vector4d, Eigen3::aligned_allocator<Vector4d> > &prjs = ptt[i];
++        vector<Vector4d, Eigen::aligned_allocator<Vector4d> > &prjs = ptt[i];
+         for (int j=0; j<nprjs; j++)
+ 	  {
+ 	    if (!(ifs >> i1 >> i2 >> v1 >> v2))
+@@ -408,7 +408,7 @@ void sba::writeA(const char *fname, SysSBA& sba)
+       }
+ 
+     // cameras
+-    Eigen3::IOFormat pfmt(16);
++    Eigen::IOFormat pfmt(16);
+     ofs << sba.A.format(pfmt) << endl;
+     ofs.close();
+ }
+@@ -429,7 +429,7 @@ void sba::writeSparseA(const char *fname, SysSBA& sba)
+         }
+ 
+       // cameras
+-      Eigen3::IOFormat pfmt(16);
++      Eigen::IOFormat pfmt(16);
+ 
+       int nrows = sba.A.rows();
+       int ncols = sba.A.cols();
+@@ -469,7 +469,7 @@ void sba::writeSparseA(const char *fname, SysSBA& sba)
+         }
+ 
+       // cameras
+-      Eigen3::IOFormat pfmt(16);
++      Eigen::IOFormat pfmt(16);
+ 
+       int nrows = sba.B.rows();
+     
+@@ -488,11 +488,11 @@ void sba::writeSparseA(const char *fname, SysSBA& sba)
+ int sba::readGraphFile(const char *filename, SysSBA& sbaout)
+ { 
+     // Create vectors to hold the data from the graph file. 
+-    vector< Vector5d, Eigen3::aligned_allocator<Vector5d> > camps;	// cam params <f d1 d2>
+-    vector< Vector4d, Eigen3::aligned_allocator<Vector4d> > camqs;	// cam rotation matrix
+-    vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > camts;	// cam translation
+-    vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > ptps;	// point position
+-    vector< vector< Vector11d, Eigen3::aligned_allocator<Vector11d> > > ptts; // point tracks - each vector is <camera_index kp_idex u v>
++    vector< Vector5d, Eigen::aligned_allocator<Vector5d> > camps;	// cam params <f d1 d2>
++    vector< Vector4d, Eigen::aligned_allocator<Vector4d> > camqs;	// cam rotation matrix
++    vector< Vector3d, Eigen::aligned_allocator<Vector3d> > camts;	// cam translation
++    vector< Vector3d, Eigen::aligned_allocator<Vector3d> > ptps;	// point position
++    vector< vector< Vector11d, Eigen::aligned_allocator<Vector11d> > > ptts; // point tracks - each vector is <camera_index kp_idex u v>
+ 
+     int ret = ParseGraphFile(filename, camps, camqs, camts, ptps, ptts);
+     if (ret < 0)
+@@ -563,7 +563,7 @@ int sba::readGraphFile(const char *filename, SysSBA& sbaout)
+     for (int i=0; i<npts; i++)
+     {
+         // track
+-        vector<Vector11d, Eigen3::aligned_allocator<Vector11d> > &ptt = ptts[i];
++        vector<Vector11d, Eigen::aligned_allocator<Vector11d> > &ptt = ptts[i];
+         int nprjs = ptt.size();
+         for (int j=0; j<nprjs; j++)
+         {
+@@ -609,13 +609,13 @@ static void make_qrot(double rr, double rp, double ry, Vector4d &v)
+ }
+ 
+ int  sba::ParseGraphFile(const char *fin,	// input file
+-  vector< Vector5d, Eigen3::aligned_allocator<Vector5d> > &camp, // cam params <fx fy cx cy>
+-  vector< Vector4d, Eigen3::aligned_allocator<Vector4d> > &camq, // cam rotation quaternion
+-  vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > &camt, // cam translation
+-  vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > &ptp, // point position
++  vector< Vector5d, Eigen::aligned_allocator<Vector5d> > &camp, // cam params <fx fy cx cy>
++  vector< Vector4d, Eigen::aligned_allocator<Vector4d> > &camq, // cam rotation quaternion
++  vector< Vector3d, Eigen::aligned_allocator<Vector3d> > &camt, // cam translation
++  vector< Vector3d, Eigen::aligned_allocator<Vector3d> > &ptp, // point position
+   // point tracks - each vector is <camera_index point_index u v d>; 
+   // point index is redundant, d is 0 for mono, >0 for stereo
+-  vector< vector< Vector11d, Eigen3::aligned_allocator<Vector11d> > > &ptts 
++  vector< vector< Vector11d, Eigen::aligned_allocator<Vector11d> > > &ptts 
+ 		)
+ {
+   // input stream
+@@ -746,7 +746,7 @@ int  sba::ParseGraphFile(const char *fin,	// input file
+ 	  // get point track
+ 	  if (ptts.size() < (size_t)pi+1)
+ 	    ptts.resize(pi+1);
+-	  vector< Vector11d, Eigen3::aligned_allocator<Vector11d> > &trk = ptts[pi];
++	  vector< Vector11d, Eigen::aligned_allocator<Vector11d> > &trk = ptts[pi];
+ 	  Vector11d tv;
+ 	  tv << ci,pi,u,v,d,cv0,cv1,cv2,cv3,cv4,cv5;
+ 	  trk.push_back(tv);
+@@ -868,12 +868,12 @@ int sba::writeGraphFile(const char *filename, SysSBA& sba, bool mono)
+ 
+ void 
+ addnode(SysSPA &spa, int n, 
+- std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ntrans, 	// node translation
+- std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > nqrot,	// node rotation
+- std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > cind,	// constraint indices
+- std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ctrans,	// constraint local translation 
+- std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > cqrot,	// constraint local rotation as quaternion
+- std::vector< Eigen3::Matrix<double,6,6>, Eigen3::aligned_allocator<Eigen3::Matrix<double,6,6> > > prec) // constraint covariance
++ std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ntrans, 	// node translation
++ std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > nqrot,	// node rotation
++ std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > cind,	// constraint indices
++ std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ctrans,	// constraint local translation 
++ std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > cqrot,	// constraint local rotation as quaternion
++ std::vector< Eigen::Matrix<double,6,6>, Eigen::aligned_allocator<Eigen::Matrix<double,6,6> > > prec) // constraint covariance
+ {
+   Node nd;
+ 
+@@ -929,12 +929,12 @@ addnode(SysSPA &spa, int n,
+ int sba::readSPAGraphFile(const char *filename, SysSPA& spaout)
+ { 
+   // Create vectors to hold the data from the graph file. 
+-  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ntrans; 	// node translation
+-  std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > nqrot;	// node rotation
+-  std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > cind;	// constraint indices
+-  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ctrans;	// constraint local translation 
+-  std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > cqrot;	// constraint local rotation as quaternion
+-  std::vector< Eigen3::Matrix<double,6,6>, Eigen3::aligned_allocator<Eigen3::Matrix<double,6,6> > > prec; // constraint covariance
++  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ntrans; 	// node translation
++  std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > nqrot;	// node rotation
++  std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > cind;	// constraint indices
++  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ctrans;	// constraint local translation 
++  std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > cqrot;	// constraint local rotation as quaternion
++  std::vector< Eigen::Matrix<double,6,6>, Eigen::aligned_allocator<Eigen::Matrix<double,6,6> > > prec; // constraint covariance
+ 
+   int ret = ParseSPAGraphFile(filename, ntrans, nqrot, cind, ctrans, cqrot, prec);
+   if (ret < 0)
+@@ -994,12 +994,12 @@ void make_covar(double *cv, Matrix<double,6,6> &m)
+ 
+ int
+ sba::ParseSPAGraphFile(const char *fin, // input file
+-   std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ntrans, // node translation
+-   std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > &nqrot,  // node rotation
+-   std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > &cind,   // constraint indices
+-   std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ctrans, // constraint local translation 
+-   std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > &cqrot,  // constraint local rotation as quaternion
+-   std::vector< Eigen3::Matrix<double,6,6>, Eigen3::aligned_allocator<Eigen3::Matrix<double,6,6> > > &prec) // constraint covariance
++   std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ntrans, // node translation
++   std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > &nqrot,  // node rotation
++   std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > &cind,   // constraint indices
++   std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ctrans, // constraint local translation 
++   std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > &cqrot,  // constraint local rotation as quaternion
++   std::vector< Eigen::Matrix<double,6,6>, Eigen::aligned_allocator<Eigen::Matrix<double,6,6> > > &prec) // constraint covariance
+ {
+   ifstream ifs(fin);
+   if (ifs == NULL)
+diff --git a/sba/src/spa.cpp b/sba/src/spa.cpp
+index 3fa4ca5..e15e453 100644
+--- a/sba/src/spa.cpp
++++ b/sba/src/spa.cpp
+@@ -51,9 +51,9 @@
+ 
+ #include <stdio.h>
+ #include "sba/sba.h"
+-#include <Eigen3/Cholesky>
++#include <Eigen/Cholesky>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace std;
+ 
+ #include <iostream>
+@@ -116,7 +116,7 @@ namespace sba
+          << "  Number of scale constraints: " << nscs << endl;
+     
+     cout << "Reading in camera data..." << flush;
+-    std::vector<Node,Eigen3::aligned_allocator<Node> > &nodes = spa.nodes;
++    std::vector<Node,Eigen::aligned_allocator<Node> > &nodes = spa.nodes;
+     Node nd;
+ 
+     for (int i=0; i<ncams; i++)
+@@ -144,7 +144,7 @@ namespace sba
+ 
+     // read in p2p constraints
+     cout << "Reading in constraint data..." << flush;
+-    std::vector<ConP2,Eigen3::aligned_allocator<ConP2> > &cons = spa.p2cons;
++    std::vector<ConP2,Eigen::aligned_allocator<ConP2> > &cons = spa.p2cons;
+     ConP2 con;
+ 
+     for (int i=0; i<np2s; i++)
+@@ -189,7 +189,7 @@ namespace sba
+ 
+     // read in scale constraints
+     cout << "Reading in scale constraint data..." << flush;
+-    std::vector<ConScale,Eigen3::aligned_allocator<ConScale> > &scons = spa.scons;
++    std::vector<ConScale,Eigen::aligned_allocator<ConScale> > &scons = spa.scons;
+     ConScale scon;
+ 
+     for (int i=0; i<nscs; i++)
+@@ -221,7 +221,7 @@ namespace sba
+   // set up Jacobians
+   // see Konolige RSS 2010 submission for details
+ 
+-  void ConP2::setJacobians(std::vector<Node,Eigen3::aligned_allocator<Node> > &nodes)
++  void ConP2::setJacobians(std::vector<Node,Eigen::aligned_allocator<Node> > &nodes)
+   {
+     // node references
+     Node &nr = nodes[ndr];
+@@ -232,7 +232,7 @@ namespace sba
+     Quaternion<double> &q1 = n1.qrot;
+ 
+     // first get the second frame in first frame coords
+-    Eigen3::Matrix<double,3,1> pc = nr.w2n * t1;
++    Eigen::Matrix<double,3,1> pc = nr.w2n * t1;
+ 
+     // Jacobians wrt first frame parameters
+ 
+@@ -243,11 +243,11 @@ namespace sba
+ 
+     // translational part of 0p1 wrt rotational vars of p0
+     // dR'/dq * [pw - t]
+-    Eigen3::Matrix<double,3,1> pwt;
++    Eigen::Matrix<double,3,1> pwt;
+     pwt = (t1-tr).head(3);   // transform translations
+ 
+     // dx
+-    Eigen3::Matrix<double,3,1> dp = nr.dRdx * pwt; // dR'/dq * [pw - t]
++    Eigen::Matrix<double,3,1> dp = nr.dRdx * pwt; // dR'/dq * [pw - t]
+     J0.block<3,1>(0,3) = dp;
+     // dy
+     dp = nr.dRdy * pwt; // dR'/dq * [pw - t]
+@@ -263,7 +263,7 @@ namespace sba
+     // from 0q1 = qpmean * s0' * q0' * q1
+ 
+     // dqdx
+-    Eigen3::Quaternion<double> qr0, qr1, qrn, qrd;
++    Eigen::Quaternion<double> qr0, qr1, qrn, qrd;
+     qr1.coeffs() = q1.coeffs();
+     qrn.coeffs() = Vector4d(-qpmean.w(),-qpmean.z(),qpmean.y(),qpmean.x());  // qpmean * ds0'/dx
+     qr0.coeffs() = Vector4d(-qr.x(),-qr.y(),-qr.z(),qr.w());
+@@ -320,7 +320,7 @@ namespace sba
+     // rotational part of 0p1 wrt rotational vars of p0
+     // from 0q1 = q0'*s1*q1
+ 
+-    Eigen3::Quaternion<double> qrc;
++    Eigen::Quaternion<double> qrc;
+     qrc.coeffs() = Vector4d(-qr.x(),-qr.y(),-qr.z(),qr.w());
+     qrc = qpmean*qrc*qr1;       // mean' * qr0' * qr1
+     qrc.normalize();
+@@ -380,7 +380,7 @@ namespace sba
+   // set up Jacobians
+   // see Konolige RSS 2010 submission for details
+ 
+-  void ConScale::setJacobians(std::vector<Node,Eigen3::aligned_allocator<Node> > &nodes)
++  void ConScale::setJacobians(std::vector<Node,Eigen::aligned_allocator<Node> > &nodes)
+   {
+     // node references
+     Node &n0 = nodes[nd0];
+@@ -388,7 +388,7 @@ namespace sba
+     Node &n1 = nodes[nd1];
+     Matrix<double,4,1> &t1 = n1.trans;
+ 
+-    Eigen3::Matrix<double,3,1> td = (t1-t0).head(3);
++    Eigen::Matrix<double,3,1> td = (t1-t0).head(3);
+ 
+     // Jacobians wrt first frame parameters
+     //  (ti - tj)^2 - a*kij
+@@ -408,7 +408,7 @@ namespace sba
+   // This hasn't been tested, and is probably wrong.
+   //
+ 
+-  void ConP3P::setJacobians(std::vector<Node,Eigen3::aligned_allocator<Node> > nodes)
++  void ConP3P::setJacobians(std::vector<Node,Eigen::aligned_allocator<Node> > nodes)
+   {
+     // node references
+     Node nr = nodes[ndr];
+@@ -640,8 +640,8 @@ namespace sba
+ 
+   // Adds a node to the system. 
+   // \return the index of the node added.
+-  int SysSPA::addNode(Eigen3::Matrix<double,4,1> &trans, 
+-                      Eigen3::Quaternion<double> &qrot,
++  int SysSPA::addNode(Eigen::Matrix<double,4,1> &trans, 
++                      Eigen::Quaternion<double> &qrot,
+                       bool isFixed)
+   {
+     Node nd;
+@@ -663,9 +663,9 @@ namespace sba
+   // <prec> is a 3x3 precision matrix (inverse covariance
+   // returns true if nodes are found
+   bool SysSPA::addConstraint(int nd0, int nd1,
+-                             Eigen3::Vector3d &tmean,
+-                             Eigen3::Quaterniond &qpmean,
+-                             Eigen3::Matrix<double,6,6> &prec)
++                             Eigen::Vector3d &tmean,
++                             Eigen::Quaterniond &qpmean,
++                             Eigen::Matrix<double,6,6> &prec)
+   {
+     if (nd0 >= (int)nodes.size() || nd1 >= (int)nodes.size()) 
+       return false;
+@@ -1149,7 +1149,7 @@ namespace sba
+       }
+     else
+       {
+-        Eigen3::IOFormat pfmt(16);
++        Eigen::IOFormat pfmt(16);
+ 
+         int nrows = A.rows();
+         int ncols = A.cols();
+diff --git a/sba/src/spa2d.cpp b/sba/src/spa2d.cpp
+index c81990e..952bf15 100644
+--- a/sba/src/spa2d.cpp
++++ b/sba/src/spa2d.cpp
+@@ -38,9 +38,9 @@
+ 
+ #include <stdio.h>
+ #include "sba/spa2d.h"
+-#include <Eigen3/Cholesky>
++#include <Eigen/Cholesky>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace std;
+ 
+ #include <iostream>
+@@ -87,7 +87,7 @@ namespace sba
+ 
+   // set up Jacobians
+ 
+-  void Con2dP2::setJacobians(std::vector<Node2d,Eigen3::aligned_allocator<Node2d> > &nodes)
++  void Con2dP2::setJacobians(std::vector<Node2d,Eigen::aligned_allocator<Node2d> > &nodes)
+   {
+     // node references
+     Node2d &nr = nodes[ndr];
+@@ -96,7 +96,7 @@ namespace sba
+     Matrix<double,3,1> &t1 = n1.trans;
+ 
+     // first get the second frame in first frame coords
+-    Eigen3::Matrix<double,2,1> pc = nr.w2n * t1;
++    Eigen::Matrix<double,2,1> pc = nr.w2n * t1;
+ 
+     // Jacobians wrt first frame parameters
+ 
+@@ -107,11 +107,11 @@ namespace sba
+ 
+     // translational part of 0p1 wrt rotational vars of p0
+     // dR'/dq * [pw - t]
+-    Eigen3::Matrix<double,2,1> pwt;
++    Eigen::Matrix<double,2,1> pwt;
+     pwt = (t1-tr).head(2);   // transform translations
+ 
+     // dx
+-    Eigen3::Matrix<double,2,1> dp = nr.dRdx * pwt; // dR'/dq * [pw - t]
++    Eigen::Matrix<double,2,1> dp = nr.dRdx * pwt; // dR'/dq * [pw - t]
+     J0.block<2,1>(0,2) = dp;
+ 
+     // rotational part of 0p1 wrt translation vars of p0 => zero
+@@ -650,8 +650,8 @@ namespace sba
+     spa.verbose = verbose;
+ 
+     // node, constraint vectors and index mapping
+-    std::vector<Node2d,Eigen3::aligned_allocator<Node2d> > &wnodes = spa.nodes;
+-    std::vector<Con2dP2,Eigen3::aligned_allocator<Con2dP2> > &wp2cons = spa.p2cons;
++    std::vector<Node2d,Eigen::aligned_allocator<Node2d> > &wnodes = spa.nodes;
++    std::vector<Con2dP2,Eigen::aligned_allocator<Con2dP2> > &wp2cons = spa.p2cons;
+     std::map<int,int> inds;
+     std::vector<int> rinds;     // reverse indices
+ 
+@@ -952,7 +952,7 @@ namespace sba
+       }
+     else
+       {
+-        Eigen3::IOFormat pfmt(16);
++        Eigen::IOFormat pfmt(16);
+ 
+         int nrows = A.rows();
+         int ncols = A.cols();
+diff --git a/sba/src/visualization.cpp b/sba/src/visualization.cpp
+index 73944da..1f0b4a5 100644
+--- a/sba/src/visualization.cpp
++++ b/sba/src/visualization.cpp
+@@ -109,9 +109,9 @@ void drawGraph(const SysSBA &sba, const ros::Publisher &camera_pub,
+               Point pt0 = sba.tracks[i].point;
+               Vector3d plane_point = prj.plane_point;
+               Vector3d plane_normal = prj.plane_normal;
+-              Eigen3::Vector3d w = pt0.head<3>()-plane_point;
+-              //              Eigen3::Vector3d projpt = plane_point+(w.dot(plane_normal))*plane_normal;
+-              Eigen3::Vector3d projpt = pt0.head<3>() - (w.dot(plane_normal))*plane_normal;
++              Eigen::Vector3d w = pt0.head<3>()-plane_point;
++              //              Eigen::Vector3d projpt = plane_point+(w.dot(plane_normal))*plane_normal;
++              Eigen::Vector3d projpt = pt0.head<3>() - (w.dot(plane_normal))*plane_normal;
+               //              Vector3d pt1 = pt0.head<3>()+0.1*plane_normal;
+               Vector3d pt1 = projpt;
+ 	          
+diff --git a/sba/test/choldemo.cpp b/sba/test/choldemo.cpp
+index 0359200..f37bef3 100644
+--- a/sba/test/choldemo.cpp
++++ b/sba/test/choldemo.cpp
+@@ -8,11 +8,11 @@
+ 
+ 
+ #if 1
+-#include <Eigen3/Core>
+-#include <Eigen3/Geometry>
+-#include <Eigen3/LU>
+-#include <Eigen3/Cholesky>
+-using namespace Eigen3;
++#include <Eigen/Core>
++#include <Eigen/Geometry>
++#include <Eigen/LU>
++#include <Eigen/Cholesky>
++using namespace Eigen;
+ #endif
+ 
+ // some LAPACK Cholesky routines
+diff --git a/sba/test/file_io_test.cpp b/sba/test/file_io_test.cpp
+index b893425..bfbeed7 100644
+--- a/sba/test/file_io_test.cpp
++++ b/sba/test/file_io_test.cpp
+@@ -54,7 +54,7 @@ class SBAFileIOTest : public :: testing::Test
+     SysSBA sys;
+     
+     // Vector containing the true point positions.
+-    vector<Point, Eigen3::aligned_allocator<Point> > points;
++    vector<Point, Eigen::aligned_allocator<Point> > points;
+     
+     void SetUp();
+     
+diff --git a/sba/test/mono_test.cpp b/sba/test/mono_test.cpp
+index 1dde3e5..0a95b87 100644
+--- a/sba/test/mono_test.cpp
++++ b/sba/test/mono_test.cpp
+@@ -43,7 +43,7 @@ using namespace std;
+ // Bring in gtest
+ #include <gtest/gtest.h>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ 
+ //
+@@ -55,7 +55,7 @@ double tol = 1e-5;
+ #define EXPECT_EQ_ABS(a,b,t) { if (fabs((a)-(b)) > (t)) EXPECT_DOUBLE_EQ(a,b); }
+ 
+ 
+-static Eigen3::Matrix<double,6,6> n2prec, n2vprec, n2aprec, n2bprec, diagprec;
++static Eigen::Matrix<double,6,6> n2prec, n2vprec, n2aprec, n2bprec, diagprec;
+ 
+ 
+ void initPrecs()
+@@ -178,7 +178,7 @@ TEST(TestJacobians, TestJacScale)
+   nd2.setTransform();		// set up world2node transform
+   nd2.setDr(true);              // local angles
+ 
+-  std::vector<Node, Eigen3::aligned_allocator<Node> > nodes;
++  std::vector<Node, Eigen::aligned_allocator<Node> > nodes;
+   nodes.push_back(nd1);
+   nodes.push_back(nd2);
+ 
+@@ -287,7 +287,7 @@ TEST(TestMono, TestMonoLocalScale)
+   SysSPA spa;
+   Node::initDr();               // set up fixed jacobians
+ 
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+   double kfang = 5.0;
+   double kfrad = kfang*M_PI/180.0;
+ 
+diff --git a/sba/test/plane_proj_test.cpp b/sba/test/plane_proj_test.cpp
+index 5832735..dcce97e 100644
+--- a/sba/test/plane_proj_test.cpp
++++ b/sba/test/plane_proj_test.cpp
+@@ -1,11 +1,11 @@
+-#include <Eigen3/Core>
+-#include <Eigen3/Geometry>
+-#include <Eigen3/LU>
+-#include <Eigen3/StdVector>
++#include <Eigen/Core>
++#include <Eigen/Geometry>
++#include <Eigen/LU>
++#include <Eigen/StdVector>
+ 
+ #include <stdio.h>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ 
+ int main()
+ {
+diff --git a/sba/test/point_plane2_vis.cpp b/sba/test/point_plane2_vis.cpp
+index 978568b..e2e2599 100644
+--- a/sba/test/point_plane2_vis.cpp
++++ b/sba/test/point_plane2_vis.cpp
+@@ -19,12 +19,12 @@ const double PI = 3.141592;
+ class Plane
+ {
+   public:
+-    vector<Point, Eigen3::aligned_allocator<Point> > points;
+-    Eigen3::Vector3d normal;
++    vector<Point, Eigen::aligned_allocator<Point> > points;
++    Eigen::Vector3d normal;
+     
+-    void rotate(const Eigen3::Quaterniond& qrot)
++    void rotate(const Eigen::Quaterniond& qrot)
+     {
+-      Eigen3::Matrix3d rotmat = qrot.toRotationMatrix();
++      Eigen::Matrix3d rotmat = qrot.toRotationMatrix();
+       
+       for (unsigned int i = 0; i < points.size(); i++)
+       {
+@@ -36,11 +36,11 @@ class Plane
+     
+     void rotate(double angle, double x, double y, double z)
+     {
+-      Eigen3::AngleAxis<double> angleaxis(angle, Vector3d(x, y, z));
+-      rotate(Eigen3::Quaterniond(angleaxis));
++      Eigen::AngleAxis<double> angleaxis(angle, Vector3d(x, y, z));
++      rotate(Eigen::Quaterniond(angleaxis));
+     }
+          
+-    void translate(const Eigen3::Vector3d& trans)
++    void translate(const Eigen::Vector3d& trans)
+     {
+       for (unsigned int i = 0; i < points.size(); i++)
+       {
+@@ -74,7 +74,7 @@ class Plane
+ 
+ 
+ // this needs to be global
+-vector<Point, Eigen3::aligned_allocator<Point> > points;
++vector<Point, Eigen::aligned_allocator<Point> > points;
+ 
+ void setupSBA(SysSBA &sys)
+ {
+@@ -113,7 +113,7 @@ void setupSBA(SysSBA &sys)
+ 
+ 
+     // Vector containing the true point positions.
+-    vector<Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > normals;
++    vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > normals;
+     
+     points.insert(points.end(), middleplane.points.begin(), middleplane.points.end());
+     normals.insert(normals.end(), middleplane.points.size(), middleplane.normal);
+diff --git a/sba/test/point_plane_test.cpp b/sba/test/point_plane_test.cpp
+index 723ed51..730f10f 100644
+--- a/sba/test/point_plane_test.cpp
++++ b/sba/test/point_plane_test.cpp
+@@ -16,12 +16,12 @@ const double PI = 3.141592;
+ class Plane
+ {
+   public:
+-    vector<Point, Eigen3::aligned_allocator<Point> > points;
+-    Eigen3::Vector3d normal;
++    vector<Point, Eigen::aligned_allocator<Point> > points;
++    Eigen::Vector3d normal;
+     
+-    void rotate(const Eigen3::Quaterniond& qrot)
++    void rotate(const Eigen::Quaterniond& qrot)
+     {
+-      Eigen3::Matrix3d rotmat = qrot.toRotationMatrix();
++      Eigen::Matrix3d rotmat = qrot.toRotationMatrix();
+       
+       for (unsigned int i = 0; i < points.size(); i++)
+       {
+@@ -33,11 +33,11 @@ class Plane
+     
+     void rotate(double angle, double x, double y, double z)
+     {
+-      Eigen3::AngleAxis<double> angleaxis(angle, Vector3d(x, y, z));
+-      rotate(Eigen3::Quaterniond(angleaxis));
++      Eigen::AngleAxis<double> angleaxis(angle, Vector3d(x, y, z));
++      rotate(Eigen::Quaterniond(angleaxis));
+     }
+          
+-    void translate(const Eigen3::Vector3d& trans)
++    void translate(const Eigen::Vector3d& trans)
+     {
+       for (unsigned int i = 0; i < points.size(); i++)
+       {
+@@ -74,7 +74,7 @@ class SBAPointPlaneTest : public :: testing::Test
+     SysSBA sys;
+     
+     // Vector containing the true point positions.
+-    vector<Point, Eigen3::aligned_allocator<Point> > points;
++    vector<Point, Eigen::aligned_allocator<Point> > points;
+     
+     void SetUp();
+     
+@@ -117,8 +117,8 @@ void SBAPointPlaneTest::SetUp()
+     // Vector containing the true point positions.
+     rightplane.normal = rightplane.normal; 
+   
+-    vector<Point, Eigen3::aligned_allocator<Point> > points;
+-    vector<Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > normals;
++    vector<Point, Eigen::aligned_allocator<Point> > points;
++    vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > normals;
+     
+     points.insert(points.end(), middleplane.points.begin(), middleplane.points.end());
+     normals.insert(normals.end(), middleplane.points.size(), middleplane.normal);
+diff --git a/sba/test/point_plane_vis.cpp b/sba/test/point_plane_vis.cpp
+index 2f92497..9061966 100644
+--- a/sba/test/point_plane_vis.cpp
++++ b/sba/test/point_plane_vis.cpp
+@@ -16,12 +16,12 @@ const double PI = 3.141592;
+ class Plane
+ {
+   public:
+-    vector<Point, Eigen3::aligned_allocator<Point> > points;
+-    Eigen3::Vector3d normal;
++    vector<Point, Eigen::aligned_allocator<Point> > points;
++    Eigen::Vector3d normal;
+     
+-    void rotate(const Eigen3::Quaterniond& qrot)
++    void rotate(const Eigen::Quaterniond& qrot)
+     {
+-      Eigen3::Matrix3d rotmat = qrot.toRotationMatrix();
++      Eigen::Matrix3d rotmat = qrot.toRotationMatrix();
+       
+       for (unsigned int i = 0; i < points.size(); i++)
+       {
+@@ -33,11 +33,11 @@ class Plane
+     
+     void rotate(double angle, double x, double y, double z)
+     {
+-      Eigen3::AngleAxis<double> angleaxis(angle, Vector3d(x, y, z));
+-      rotate(Eigen3::Quaterniond(angleaxis));
++      Eigen::AngleAxis<double> angleaxis(angle, Vector3d(x, y, z));
++      rotate(Eigen::Quaterniond(angleaxis));
+     }
+          
+-    void translate(const Eigen3::Vector3d& trans)
++    void translate(const Eigen::Vector3d& trans)
+     {
+       for (unsigned int i = 0; i < points.size(); i++)
+       {
+@@ -107,8 +107,8 @@ void setupSBA(SysSBA &sys)
+     // Vector containing the true point positions.
+     rightplane.normal = rightplane.normal; 
+   
+-    vector<Point, Eigen3::aligned_allocator<Point> > points;
+-    vector<Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > normals;
++    vector<Point, Eigen::aligned_allocator<Point> > points;
++    vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > normals;
+     
+     points.insert(points.end(), middleplane.points.begin(), middleplane.points.end());
+     normals.insert(normals.end(), middleplane.points.size(), middleplane.normal);
+diff --git a/sba/test/read_spa.cpp b/sba/test/read_spa.cpp
+index 0f46298..0ae9edd 100644
+--- a/sba/test/read_spa.cpp
++++ b/sba/test/read_spa.cpp
+@@ -42,7 +42,7 @@
+ #include <sys/time.h>
+ 
+ using namespace std;
+-using namespace Eigen3;
++using namespace Eigen;
+ 
+ //
+ // read in an SPA file
+@@ -116,17 +116,17 @@ void make_covar(double *cv, Matrix<double,6,6> &m)
+ int
+ ReadSPAFile(char *fin,          // input file
+             // node translation
+-            std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ntrans,
++            std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ntrans,
+             // node rotation
+-            std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > &nqrot,
++            std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > &nqrot,
+             // constraint indices
+-            std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > &cind,
++            std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > &cind,
+             // constraint local translation 
+-            std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > &ctrans,
++            std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > &ctrans,
+             // constraint local rotation as quaternion
+-            std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > &cqrot,
++            std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > &cqrot,
+             // constraint covariance
+-            std::vector< Eigen3::Matrix<double,6,6>, Eigen3::aligned_allocator<Eigen3::Matrix<double,6,6> > > &cvar,
++            std::vector< Eigen::Matrix<double,6,6>, Eigen::aligned_allocator<Eigen::Matrix<double,6,6> > > &cvar,
+             // track info: point projections, see format description in IntelSeattle files
+             std::vector<struct tinfo> &tracks
+             )
+@@ -294,19 +294,19 @@ void make_covar_2d(double *cv, Matrix<double,3,3> &m, bool useFreiburg)
+ int
+ ReadSPA2dFile(char *fin,          // input file
+             // node translation
+-            std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > &ntrans,
++            std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > &ntrans,
+             // node rotation
+             std::vector< double > &narot,
+             // constraint indices
+-            std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > &cind,
++            std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > &cind,
+             // constraint local translation 
+-            std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > &ctrans,
++            std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > &ctrans,
+             // constraint local rotation as angle
+             std::vector< double > &carot,
+             // constraint covariance
+-            std::vector< Eigen3::Matrix<double,3,3>, Eigen3::aligned_allocator<Eigen3::Matrix<double,3,3> > > &cvar,
++            std::vector< Eigen::Matrix<double,3,3>, Eigen::aligned_allocator<Eigen::Matrix<double,3,3> > > &cvar,
+             // scan points
+-            std::vector< std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > > &scans
++            std::vector< std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > > &scans
+             )
+ {
+   ifstream ifs(fin);
+@@ -428,7 +428,7 @@ ReadSPA2dFile(char *fin,          // input file
+           w2n.col(2).setZero();
+           w2n.col(2) = -w2n*tr;
+ 
+-          std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > scan;
++          std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > scan;
+           string str;
+           getline(ss,str);
+           istringstream sss(str);
+diff --git a/sba/test/run_sba_bundler_file.cpp b/sba/test/run_sba_bundler_file.cpp
+index 5184071..07e70df 100644
+--- a/sba/test/run_sba_bundler_file.cpp
++++ b/sba/test/run_sba_bundler_file.cpp
+@@ -45,7 +45,7 @@
+ #include <sys/time.h>
+ 
+ using namespace std;
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+diff --git a/sba/test/run_sba_graph_file.cpp b/sba/test/run_sba_graph_file.cpp
+index ee869ce..21a1604 100644
+--- a/sba/test/run_sba_graph_file.cpp
++++ b/sba/test/run_sba_graph_file.cpp
+@@ -45,7 +45,7 @@
+ #include <sys/time.h>
+ 
+ using namespace std;
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+diff --git a/sba/test/run_sba_sphere.cpp b/sba/test/run_sba_sphere.cpp
+index aeedc46..8c05f2d 100644
+--- a/sba/test/run_sba_sphere.cpp
++++ b/sba/test/run_sba_sphere.cpp
+@@ -37,7 +37,7 @@
+ 
+ #include "sba/sba.h"
+ #include "sba/sba_setup.h"
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ 
+ #include <iostream>
+@@ -81,7 +81,7 @@ int main(int argc, char **argv)
+     {
+       // define a camera and bundle system
+       SysSBA sba;
+-      vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++      vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+       cps.clear();
+ 
+       CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+diff --git a/sba/test/run_sba_spiral.cpp b/sba/test/run_sba_spiral.cpp
+index bb75026..2657780 100644
+--- a/sba/test/run_sba_spiral.cpp
++++ b/sba/test/run_sba_spiral.cpp
+@@ -37,7 +37,7 @@
+ 
+ #include "sba/sba.h"
+ #include "sba/sba_setup.h"
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ 
+ #include <iostream>
+@@ -85,7 +85,7 @@ int main(int argc, char **argv)
+     {
+       // define a camera and bundle system
+       SysSBA sba;
+-      vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++      vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+       cps.clear();
+ 
+       double kfang = 5.0;
+diff --git a/sba/test/run_spa.cpp b/sba/test/run_spa.cpp
+index b211514..7054c9f 100644
+--- a/sba/test/run_spa.cpp
++++ b/sba/test/run_spa.cpp
+@@ -42,9 +42,9 @@
+ #include <fstream>
+ #include "sba/read_spa.h"
+ #include "sba/sba.h"
+-#include <Eigen3/Cholesky>
++#include <Eigen/Cholesky>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace std;
+ using namespace sba;
+ 
+@@ -69,17 +69,17 @@ static long long utime()
+ void 
+ addnode(SysSPA &spa, int n, 
+ 	// node translation
+-	std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ntrans,
++	std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ntrans,
+ 	// node rotation
+-	std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > nqrot,
++	std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > nqrot,
+ 	// constraint indices
+-	std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > cind,
++	std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > cind,
+ 	// constraint local translation 
+-	std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ctrans,
++	std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ctrans,
+ 	// constraint local rotation as quaternion
+-	std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > cqrot,
++	std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > cqrot,
+ 	// constraint covariance
+-	std::vector< Eigen3::Matrix<double,6,6>, Eigen3::aligned_allocator<Eigen3::Matrix<double,6,6> > > cvar)
++	std::vector< Eigen::Matrix<double,6,6>, Eigen::aligned_allocator<Eigen::Matrix<double,6,6> > > cvar)
+ 
+ {
+   Node nd;
+@@ -156,17 +156,17 @@ int main(int argc, char **argv)
+   fin = argv[1];
+ 
+   // node translation
+-  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ntrans;
++  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ntrans;
+   // node rotation
+-  std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > nqrot;
++  std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > nqrot;
+   // constraint indices
+-  std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > cind;
++  std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > cind;
+   // constraint local translation 
+-  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ctrans;
++  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ctrans;
+   // constraint local rotation as quaternion
+-  std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > cqrot;
++  std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > cqrot;
+   // constraint covariance
+-  std::vector< Eigen3::Matrix<double,6,6>, Eigen3::aligned_allocator<Eigen3::Matrix<double,6,6> > > cvar;
++  std::vector< Eigen::Matrix<double,6,6>, Eigen::aligned_allocator<Eigen::Matrix<double,6,6> > > cvar;
+   // tracks
+   std::vector<struct tinfo> tracks;
+ 
+diff --git a/sba/test/run_spa2d.cpp b/sba/test/run_spa2d.cpp
+index b8d4cff..079d448 100644
+--- a/sba/test/run_spa2d.cpp
++++ b/sba/test/run_spa2d.cpp
+@@ -43,9 +43,9 @@
+ #include "sba/read_spa.h"
+ #include "sba/sba.h"
+ #include "sba/spa2d.h"
+-#include <Eigen3/Cholesky>
++#include <Eigen/Cholesky>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace std;
+ using namespace sba;
+ 
+@@ -70,17 +70,17 @@ static long long utime()
+ void 
+ addnode(SysSPA2d &spa, int n, 
+ 	// node translation
+-	std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > ntrans,
++	std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > ntrans,
+ 	// node rotation
+ 	std::vector< double > arots,
+ 	// constraint indices
+-	std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > cind,
++	std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > cind,
+ 	// constraint local translation 
+-	std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > ctrans,
++	std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > ctrans,
+ 	// constraint local rotation as quaternion
+ 	std::vector< double > carot,
+ 	// constraint precision
+-	std::vector< Eigen3::Matrix<double,3,3>, Eigen3::aligned_allocator<Eigen3::Matrix<double,3,3> > > cvar)
++	std::vector< Eigen::Matrix<double,3,3>, Eigen::aligned_allocator<Eigen::Matrix<double,3,3> > > cvar)
+ 
+ {
+   Node2d nd1;
+@@ -146,19 +146,19 @@ int main(int argc, char **argv)
+   fin = argv[1];
+ 
+   // node translation
+-  std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > ntrans;
++  std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > ntrans;
+   // node rotation
+   std::vector< double > arots;
+   // constraint indices
+-  std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > cind;
++  std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > cind;
+   // constraint local translation 
+-  std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > ctrans;
++  std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > ctrans;
+   // constraint local rotation as quaternion
+   std::vector< double > carot;
+   // constraint precision
+-  std::vector< Eigen3::Matrix<double,3,3>, Eigen3::aligned_allocator<Eigen3::Matrix<double,3,3> > > cvar;
++  std::vector< Eigen::Matrix<double,3,3>, Eigen::aligned_allocator<Eigen::Matrix<double,3,3> > > cvar;
+   // scans
+-  std::vector< std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > > scans;
++  std::vector< std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > > scans;
+ 
+   ReadSPA2dFile(fin,ntrans,arots,cind,ctrans,carot,cvar,scans);
+ 
+diff --git a/sba/test/run_spa_graph_file.cpp b/sba/test/run_spa_graph_file.cpp
+index a00a621..d0534c1 100644
+--- a/sba/test/run_spa_graph_file.cpp
++++ b/sba/test/run_spa_graph_file.cpp
+@@ -45,7 +45,7 @@
+ #include <sys/time.h>
+ 
+ using namespace std;
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+diff --git a/sba/test/sba_jac.cpp b/sba/test/sba_jac.cpp
+index b856848..6bdee54 100644
+--- a/sba/test/sba_jac.cpp
++++ b/sba/test/sba_jac.cpp
+@@ -43,7 +43,7 @@ using namespace std;
+ // Bring in gtest
+ #include <gtest/gtest.h>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+diff --git a/sba/test/sba_node_test.cpp b/sba/test/sba_node_test.cpp
+index 9271a33..2c13333 100644
+--- a/sba/test/sba_node_test.cpp
++++ b/sba/test/sba_node_test.cpp
+@@ -36,7 +36,7 @@ void setupSBA(SysSBA &sys)
+     double plane_distance = 5; // Distance of the plane from the cameras (z)
+ 
+     // Vector containing the true point positions.
+-    vector<Point, Eigen3::aligned_allocator<Point> > points;
++    vector<Point, Eigen::aligned_allocator<Point> > points;
+ 
+     for (int ix = 0; ix < npts_x ; ix++)
+     {
+@@ -135,8 +135,8 @@ void setupSBA(SysSBA &sys)
+         
+ }
+ 
+-void publishNode(unsigned int index, Eigen3::Matrix<double,4,1> trans, 
+-                Eigen3::Quaternion<double> fq,
++void publishNode(unsigned int index, Eigen::Matrix<double,4,1> trans, 
++                Eigen::Quaternion<double> fq,
+                 const frame_common::CamParams &cp,
+                 bool isFixed, sba::CameraNode &msg)
+ { 
+@@ -167,7 +167,7 @@ void publishPoint(unsigned int index, sba::Point pt, sba::WorldPoint &msg)
+     msg.w = pt.w();
+ }
+ 
+-void publishProjection(int ci, int pi, Eigen3::Vector3d &q, 
++void publishProjection(int ci, int pi, Eigen::Vector3d &q, 
+                        bool stereo, sba::Projection &msg)
+ {
+     msg.camindex = ci;
+diff --git a/sba/test/sba_test.cpp b/sba/test/sba_test.cpp
+index 8f6fd2f..f707f53 100644
+--- a/sba/test/sba_test.cpp
++++ b/sba/test/sba_test.cpp
+@@ -41,7 +41,7 @@
+ // Bring in gtest
+ #include <gtest/gtest.h>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+@@ -308,10 +308,10 @@ TEST(SBAtest, SimpleSystem)
+ 
+   // set up projections onto nodes
+   ind = 0;
+-  for(vector<Point,Eigen3::aligned_allocator<Point> >::iterator itr = sys.points.begin(); itr!=sys.points.end(); itr++)
++  for(vector<Point,Eigen::aligned_allocator<Point> >::iterator itr = sys.points.begin(); itr!=sys.points.end(); itr++)
+     {
+       Point pt = *itr;      
+-      vector<Proj,Eigen3::aligned_allocator<Proj> > prjs;	// new point track
++      vector<Proj,Eigen::aligned_allocator<Proj> > prjs;	// new point track
+       Proj prj;
+       prj.isValid = true;
+       prj.pti = ind;
+diff --git a/sba/test/sbast_jac.cpp b/sba/test/sbast_jac.cpp
+index e7ec400..e85e344 100644
+--- a/sba/test/sbast_jac.cpp
++++ b/sba/test/sbast_jac.cpp
+@@ -43,7 +43,7 @@ using namespace std;
+ // Bring in gtest
+ #include <gtest/gtest.h>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+diff --git a/sba/test/sbast_test.cpp b/sba/test/sbast_test.cpp
+index 09e35c5..418e034 100644
+--- a/sba/test/sbast_test.cpp
++++ b/sba/test/sbast_test.cpp
+@@ -41,7 +41,7 @@
+ // Bring in gtest
+ #include <gtest/gtest.h>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+@@ -323,10 +323,10 @@ TEST(SBAtest, SimpleSystem)
+ 
+   // set up projections onto nodes
+   ind = 0;
+-  for(vector<Point,Eigen3::aligned_allocator<Point> >::iterator itr = sys.points.begin(); itr!=sys.points.end(); itr++)
++  for(vector<Point,Eigen::aligned_allocator<Point> >::iterator itr = sys.points.begin(); itr!=sys.points.end(); itr++)
+     {
+       Point pt = *itr;      
+-      vector<Proj,Eigen3::aligned_allocator<Proj> > prjs;	// new point track
++      vector<Proj,Eigen::aligned_allocator<Proj> > prjs;	// new point track
+       Proj prj;
+       prj.isValid = true;
+       prj.pti = ind;
+diff --git a/sba/test/single_plane_vis.cpp b/sba/test/single_plane_vis.cpp
+index a861e1a..02deeac 100644
+--- a/sba/test/single_plane_vis.cpp
++++ b/sba/test/single_plane_vis.cpp
+@@ -13,18 +13,18 @@ using namespace std;
+ 
+ const double PI = 3.141592;
+ 
+-int addPointAndProjection(SysSBA& sba, vector<Point, Eigen3::aligned_allocator<Point> >& points, int ndi);
++int addPointAndProjection(SysSBA& sba, vector<Point, Eigen::aligned_allocator<Point> >& points, int ndi);
+ void calculateProj(SysSBA& sba, Point& point, int ndi, Vector3d& proj);
+ 
+ class Plane
+ {
+   public:
+-    vector<Point, Eigen3::aligned_allocator<Point> > points;
+-    Eigen3::Vector3d normal;
++    vector<Point, Eigen::aligned_allocator<Point> > points;
++    Eigen::Vector3d normal;
+     
+-    void rotate(const Eigen3::Quaterniond& qrot)
++    void rotate(const Eigen::Quaterniond& qrot)
+     {
+-      Eigen3::Matrix3d rotmat = qrot.toRotationMatrix();
++      Eigen::Matrix3d rotmat = qrot.toRotationMatrix();
+       
+       for (unsigned int i = 0; i < points.size(); i++)
+       {
+@@ -36,11 +36,11 @@ class Plane
+     
+     void rotate(double angle, double x, double y, double z)
+     {
+-      Eigen3::AngleAxis<double> angleaxis(angle, Vector3d(x, y, z));
+-      rotate(Eigen3::Quaterniond(angleaxis));
++      Eigen::AngleAxis<double> angleaxis(angle, Vector3d(x, y, z));
++      rotate(Eigen::Quaterniond(angleaxis));
+     }
+          
+-    void translate(const Eigen3::Vector3d& trans)
++    void translate(const Eigen::Vector3d& trans)
+     {
+       for (unsigned int i = 0; i < points.size(); i++)
+       {
+@@ -203,7 +203,7 @@ void setupSBA(SysSBA &sba)
+     }
+ }
+ 
+-int addPointAndProjection(SysSBA& sba, vector<Point, Eigen3::aligned_allocator<Point> >& points, int ndi)
++int addPointAndProjection(SysSBA& sba, vector<Point, Eigen::aligned_allocator<Point> >& points, int ndi)
+ {
+     // Define dimensions of the image.
+     int maxx = 640;
+diff --git a/sba/test/spa2d_test.cpp b/sba/test/spa2d_test.cpp
+index 76d84fd..964ecba 100644
+--- a/sba/test/spa2d_test.cpp
++++ b/sba/test/spa2d_test.cpp
+@@ -43,7 +43,7 @@ using namespace std;
+ // Bring in gtest
+ #include <gtest/gtest.h>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+@@ -56,7 +56,7 @@ double tol = 1e-5;
+ #define EXPECT_EQ_ABS(a,b,t) { if (fabs((a)-(b)) > (t)) EXPECT_DOUBLE_EQ(a,b); }
+ 
+ 
+-static Eigen3::Matrix<double,3,3> n2prec, n2vprec, diagprec;
++static Eigen::Matrix<double,3,3> n2prec, n2vprec, diagprec;
+ 
+ 
+ void initPrecs()
+@@ -122,7 +122,7 @@ TEST(TestJacobians, TestJac2dP2)
+   nd2.setTransform();		// set up world2node transform
+   nd2.setDr();                  // local angles
+ 
+-  std::vector<Node2d, Eigen3::aligned_allocator<Node2d> > nodes;
++  std::vector<Node2d, Eigen::aligned_allocator<Node2d> > nodes;
+   nodes.push_back(nd1);
+   nodes.push_back(nd2);
+ 
+@@ -264,7 +264,7 @@ TEST(TestSPA2d, TestSimple2nodes)
+ {
+   SysSPA2d spa;
+ 
+-  vector<Matrix<double,3,1>,Eigen3::aligned_allocator<Matrix<double,3,1> > > cps;
++  vector<Matrix<double,3,1>,Eigen::aligned_allocator<Matrix<double,3,1> > > cps;
+   double kfang = 5.0;
+ 
+   spa2d_spiral_setup(spa, cps,
+@@ -296,7 +296,7 @@ TEST(TestSPA2d, TestSimple3nodes)
+ {
+   SysSPA2d spa;
+ 
+-  vector<Matrix<double,3,1>,Eigen3::aligned_allocator<Matrix<double,3,1> > > cps;
++  vector<Matrix<double,3,1>,Eigen::aligned_allocator<Matrix<double,3,1> > > cps;
+   double kfang = 5.0;
+ 
+   spa2d_spiral_setup(spa, cps,
+@@ -379,7 +379,7 @@ TEST(TestSPA2d, TestSimple10_i90)
+ {
+   SysSPA2d spa;
+ 
+-  vector<Matrix<double,3,1>,Eigen3::aligned_allocator<Matrix<double,3,1> > > cps;
++  vector<Matrix<double,3,1>,Eigen::aligned_allocator<Matrix<double,3,1> > > cps;
+   double kfang = 5.0;
+   double kfrad = kfang*M_PI/180.0;
+ 
+@@ -425,7 +425,7 @@ TEST(TestSPA2d, TestSimple10_i0)
+ {
+   SysSPA2d spa;
+ 
+-  vector<Matrix<double,3,1>,Eigen3::aligned_allocator<Matrix<double,3,1> > > cps;
++  vector<Matrix<double,3,1>,Eigen::aligned_allocator<Matrix<double,3,1> > > cps;
+   double kfang = 5.0;
+   double kfrad = kfang*M_PI/180.0;
+ 
+@@ -469,7 +469,7 @@ TEST(TestSPA2d, TestSimple400nodesSparse)
+ {
+   SysSPA2d spa;
+ 
+-  vector<Matrix<double,3,1>,Eigen3::aligned_allocator<Matrix<double,3,1> > > cps;
++  vector<Matrix<double,3,1>,Eigen::aligned_allocator<Matrix<double,3,1> > > cps;
+   double kfang = 5.0;
+ 
+   spa2d_spiral_setup(spa, cps,
+@@ -534,7 +534,7 @@ TEST(TestSPA2d, TestSimple400nodes)
+ {
+   SysSPA2d spa;
+ 
+-  vector<Matrix<double,3,1>,Eigen3::aligned_allocator<Matrix<double,3,1> > > cps;
++  vector<Matrix<double,3,1>,Eigen::aligned_allocator<Matrix<double,3,1> > > cps;
+   double kfang = 5.0;
+ 
+   spa2d_spiral_setup(spa, cps,
+diff --git a/sba/test/spiral_setup.cpp b/sba/test/spiral_setup.cpp
+index ec9e28e..edad50b 100644
+--- a/sba/test/spiral_setup.cpp
++++ b/sba/test/spiral_setup.cpp
+@@ -36,7 +36,7 @@
+ // setup fns for spiral trajectory
+ 
+ #include "sba/sba_setup.h"
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+@@ -56,7 +56,7 @@ static double far = 10.0;
+ static int camn = 0;
+ static int camp = -1;
+ 
+-int mark_points(SysSBA &sba, Node& ci, vector< Point,Eigen3::aligned_allocator<Point>  >& Wpts, vector<int> &Wptref, 
++int mark_points(SysSBA &sba, Node& ci, vector< Point,Eigen::aligned_allocator<Point>  >& Wpts, vector<int> &Wptref, 
+                 vector<int> &Wptind)
+ {
+   int ntot = 0;
+@@ -105,7 +105,7 @@ int mark_points(SysSBA &sba, Node& ci, vector< Point,Eigen3::aligned_allocator<P
+ // add measurements, assuming ref counts present
+ // <cind> is the camera/node index
+ int add_points(SysSBA &sba, double inoise, int cind, 
+-               vector< Vector4d,Eigen3::aligned_allocator<Vector4d> >& Wpts, vector<int> &Wptref,
++               vector< Vector4d,Eigen::aligned_allocator<Vector4d> >& Wpts, vector<int> &Wptref,
+                vector<int> &Wptind)
+ {
+   int ntot = 0;
+@@ -152,7 +152,7 @@ long long utime()
+ 
+ // set up spiral camera/point system
+ void
+-spiral_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>, Eigen3::aligned_allocator<Matrix<double,6,1> > > &cps,
++spiral_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>, Eigen::aligned_allocator<Matrix<double,6,1> > > &cps,
+              double s_near, double s_far,
+              double ptsize, double kfang, double initang, double cycles, 
+              double inoise, double pnoise, double qnoise)
+@@ -168,7 +168,7 @@ spiral_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>, Eigen3::a
+   const double Wsize2 = Wsize * 0.5;
+   int Wvol = (int)(Wsize*Wsize*Wsize+0.5);
+   int Npts = Wvol * ptsize;
+-  vector< Point, Eigen3::aligned_allocator<Point> > Wpts; // list of world points
++  vector< Point, Eigen::aligned_allocator<Point> > Wpts; // list of world points
+   vector< int > Wptref;         // ref count for points
+   vector< int > Wptind;         // index from SBA pts to Wpts
+   Wpts.resize(Npts);            // 10K points
+@@ -307,7 +307,7 @@ spiral_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>, Eigen3::a
+ //
+ 
+ int add_p2con(SysSPA &spa, int i, int j, 
+-              Eigen3::Matrix<double,6,6> prec,
++              Eigen::Matrix<double,6,6> prec,
+               double mpnoise, double mqnoise)
+ {
+   ConP2 con;
+@@ -338,7 +338,7 @@ int add_p2con(SysSPA &spa, int i, int j,
+ // set up spiral frame/frame system
+ void
+ spa_spiral_setup(SysSPA &spa, bool use_cross_links,
+-                 vector<Matrix<double,6,1>, Eigen3::aligned_allocator<Matrix<double,6,1> > > &cps,
++                 vector<Matrix<double,6,1>, Eigen::aligned_allocator<Matrix<double,6,1> > > &cps,
+                  Matrix<double,6,6> prec, Matrix<double,6,6> vprec,
+                  Matrix<double,6,6> a10prec, Matrix<double,6,6> a15prec,
+                  double kfang, double initang, double cycles, 
+@@ -518,7 +518,7 @@ spa_spiral_setup(SysSPA &spa, bool use_cross_links,
+ //
+ 
+ int add_p2con2d(SysSPA2d &spa, int i, int j, 
+-                Eigen3::Matrix<double,3,3> prec,
++                Eigen::Matrix<double,3,3> prec,
+                 double mpnoise, double mqnoise)
+ {
+   Con2dP2 con;
+@@ -550,7 +550,7 @@ int add_p2con2d(SysSPA2d &spa, int i, int j,
+ // set up spiral frame/frame system
+ void
+ spa2d_spiral_setup(SysSPA2d &spa, 
+-                 vector<Matrix<double,3,1>, Eigen3::aligned_allocator<Matrix<double,3,1> > > &cps,
++                 vector<Matrix<double,3,1>, Eigen::aligned_allocator<Matrix<double,3,1> > > &cps,
+                  Matrix<double,3,3> prec, Matrix<double,3,3> vprec,
+                  Matrix<double,3,3> a10prec, Matrix<double,3,3> a15prec,
+                  double kfang, double initang, double cycles, 
+@@ -781,7 +781,7 @@ find_cams(SysSBA &sba, int ci, set<int> &cinds, int nconns)
+ }
+ 
+ void
+-sphere_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>, Eigen3::aligned_allocator<Matrix<double,6,1> > > &cps,
++sphere_setup(SysSBA &sba, CamParams &cpars, vector<Matrix<double,6,1>, Eigen::aligned_allocator<Matrix<double,6,1> > > &cps,
+ 	     int ncams,		// number of cameras
+ 	     int ncpts,		// number of new pts per camera
+ 	     int nccs,		// number of camera connections per camera
+diff --git a/sba/test/spiral_test.cpp b/sba/test/spiral_test.cpp
+index fc58b7b..8309fed 100644
+--- a/sba/test/spiral_test.cpp
++++ b/sba/test/spiral_test.cpp
+@@ -38,7 +38,7 @@
+ #include "sba/sba.h"
+ #include "sba/sba_setup.h"
+ #include "sba/sba_file_io.h"
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ 
+ #include <iostream>
+@@ -67,7 +67,7 @@ TEST(TestSBA, SpiralSystem_2nodes_A)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -94,7 +94,7 @@ TEST(TestSBA, SpiralSystem_2nodes2_A)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 10.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -121,7 +121,7 @@ TEST(TestSBA, SpiralSystem_2nodes3_A)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 15.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -148,7 +148,7 @@ TEST(TestSBA, SpiralSystem_2nodes_vert_A)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 360.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -180,7 +180,7 @@ TEST(TestSBA, SpiralSystem_init90n)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -245,7 +245,7 @@ TEST(TestSBA, SpiralSystem_init0)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -303,7 +303,7 @@ TEST(TestSBA, SpiralSystem_global_init0)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -366,7 +366,7 @@ TEST(TestSBA, SpiralSystem_init90)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -430,7 +430,7 @@ TEST(TestSBA, SpiralSystem_init180)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -490,7 +490,7 @@ TEST(TestSBA, SpiralSystem_global_init180)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -553,7 +553,7 @@ TEST(TestSBA, SpiralSystem_global_init90n)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -623,7 +623,7 @@ TEST(TestSBA, SpiralSystem_global_400)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -700,7 +700,7 @@ TEST(TestSBA, SpiralSystem_54)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 10.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+@@ -783,7 +783,7 @@ TEST(TestSBA, SpiralSystem_400)
+   // define a camera and bundle system
+   SysSBA sba;
+   Node::initDr();
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+ 
+   double kfang = 5.0;
+   CamParams cpars = {300,300,320,240,0}; // 300 pix focal length
+diff --git a/sba/test/vis-2d.cpp b/sba/test/vis-2d.cpp
+index bb6861c..a5ee048 100644
+--- a/sba/test/vis-2d.cpp
++++ b/sba/test/vis-2d.cpp
+@@ -47,9 +47,9 @@
+ #include "sba/read_spa.h"
+ #include "sba/sba.h"
+ #include "sba/spa2d.h"
+-#include <Eigen3/Cholesky>
++#include <Eigen/Cholesky>
+ 
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace std;
+ using namespace sba;
+ 
+@@ -70,7 +70,7 @@ static long long utime()
+ static int useInit = 0;
+ 
+ 
+-void buildConstraintCache(std::multimap<int,int>& constraintCache, std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> >& cind){
++void buildConstraintCache(std::multimap<int,int>& constraintCache, std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> >& cind){
+   for (size_t i=0; i<cind.size(); i++){
+     int idx_a=cind[i].x();
+     int idx_b=cind[i].y();
+@@ -89,12 +89,12 @@ void buildConstraintCache(std::multimap<int,int>& constraintCache, std::vector<
+ 
+ int 
+ addnode(SysSPA2d &spa, int n, 
+-        std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > &ntrans,
++        std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > &ntrans,
+         std::vector< double > &arots,
+-        std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > &cind,
+-        std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > &ctrans,
++        std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > &cind,
++        std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > &ctrans,
+         std::vector< double > &carot,
+-        std::vector< Eigen3::Matrix<double,3,3>, Eigen3::aligned_allocator<Eigen3::Matrix<double,3,3> > > &cvar,
++        std::vector< Eigen::Matrix<double,3,3>, Eigen::aligned_allocator<Eigen::Matrix<double,3,3> > > &cvar,
+         std::multimap<int,int>& constraintCache)
+ {
+   Node2d &nd0 = spa.nodes[n-1];
+@@ -294,7 +294,7 @@ drawgraph(SysSPA2d &spa, ros::Publisher &marker_pub, ros::Publisher &marker2_pub
+     // draw points
+     for (int i=0; i<nscans; i++)
+       {
+-        std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > &scan = spa.scans[i];
++        std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > &scan = spa.scans[i];
+         Node2d &nd = spa.nodes[i];
+         Matrix<double,2,3> n2w;
+         n2w.col(2) = nd.trans.head(2);
+@@ -351,19 +351,19 @@ int main(int argc, char **argv)
+   fin = argv[1];
+ 
+   // node translation
+-  std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > ntrans;
++  std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > ntrans;
+   // node rotation
+   std::vector< double > arots;
+   // constraint indices
+-  std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > cind;
++  std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > cind;
+   // constraint local translation 
+-  std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > ctrans;
++  std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > ctrans;
+   // constraint local rotation as quaternion
+   std::vector< double > carot;
+   // constraint precision
+-  std::vector< Eigen3::Matrix<double,3,3>, Eigen3::aligned_allocator<Eigen3::Matrix<double,3,3> > > cvar;
++  std::vector< Eigen::Matrix<double,3,3>, Eigen::aligned_allocator<Eigen::Matrix<double,3,3> > > cvar;
+   // scans
+-  std::vector< std::vector< Eigen3::Vector2d, Eigen3::aligned_allocator<Eigen3::Vector2d> > > scans;
++  std::vector< std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > > scans;
+ 
+   ReadSPA2dFile(fin,ntrans,arots,cind,ctrans,carot,cvar,scans);
+   int npts = 0;
+diff --git a/sba/test/vis-bundler.cpp b/sba/test/vis-bundler.cpp
+index 561299f..d44eca1 100644
+--- a/sba/test/vis-bundler.cpp
++++ b/sba/test/vis-bundler.cpp
+@@ -50,7 +50,7 @@
+ #include <sys/time.h>
+ 
+ using namespace std;
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+@@ -167,12 +167,12 @@ int main(int argc, char **argv)
+ 
+   fin = argv[1];
+ 
+-  vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > camps;	// cam params <f d1 d2>
+-  vector< Matrix3d, Eigen3::aligned_allocator<Matrix3d> > camRs;	// cam rotation matrix
+-  vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > camts;	// cam translation
+-  vector< Vector3d, Eigen3::aligned_allocator<Vector3d> > ptps;	// point position
+-  vector< Vector3i, Eigen3::aligned_allocator<Vector3i> > ptcs;	// point color
+-  vector< vector< Vector4d, Eigen3::aligned_allocator<Vector4d> > > ptts; // point tracks - each vector is <camera_index kp_idex u v>
++  vector< Vector3d, Eigen::aligned_allocator<Vector3d> > camps;	// cam params <f d1 d2>
++  vector< Matrix3d, Eigen::aligned_allocator<Matrix3d> > camRs;	// cam rotation matrix
++  vector< Vector3d, Eigen::aligned_allocator<Vector3d> > camts;	// cam translation
++  vector< Vector3d, Eigen::aligned_allocator<Vector3d> > ptps;	// point position
++  vector< Vector3i, Eigen::aligned_allocator<Vector3i> > ptcs;	// point color
++  vector< vector< Vector4d, Eigen::aligned_allocator<Vector4d> > > ptts; // point tracks - each vector is <camera_index kp_idex u v>
+ 
+   int ret = ParseBundlerFile(fin, camps, camRs, camts, ptps, ptcs, ptts);
+   if (ret < 0)
+@@ -265,7 +265,7 @@ int main(int argc, char **argv)
+   for (int i=0; i<npts; i++)
+     {
+       // track
+-      vector<Vector4d, Eigen3::aligned_allocator<Vector4d> > &ptt = ptts[i];
++      vector<Vector4d, Eigen::aligned_allocator<Vector4d> > &ptt = ptts[i];
+       int nprjs = ptt.size();
+       for (int j=0; j<nprjs; j++)
+ 	{
+@@ -371,7 +371,7 @@ int main(int argc, char **argv)
+   for (int i=0; i<npts; i++)
+     {
+       // track
+-      vector<Vector4d, Eigen3::aligned_allocator<Vector4d> > &ptt = ptts[i];
++      vector<Vector4d, Eigen::aligned_allocator<Vector4d> > &ptt = ptts[i];
+       int nprjs = ptt.size();
+       for (int j=0; j<nprjs; j++)
+ 	    {
+diff --git a/sba/test/vis-intel.cpp b/sba/test/vis-intel.cpp
+index c611d3f..7b961c1 100644
+--- a/sba/test/vis-intel.cpp
++++ b/sba/test/vis-intel.cpp
+@@ -51,7 +51,7 @@
+ #include <sys/time.h>
+ 
+ using namespace std;
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+@@ -194,17 +194,17 @@ int main(int argc, char **argv)
+ 
+ 
+   // node translation
+-  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ntrans;
++  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ntrans;
+   // node rotation
+-  std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > nqrot;
++  std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > nqrot;
+   // constraint indices
+-  std::vector< Eigen3::Vector2i, Eigen3::aligned_allocator<Eigen3::Vector2i> > cind;
++  std::vector< Eigen::Vector2i, Eigen::aligned_allocator<Eigen::Vector2i> > cind;
+   // constraint local translation 
+-  std::vector< Eigen3::Vector3d, Eigen3::aligned_allocator<Eigen3::Vector3d> > ctrans;
++  std::vector< Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > ctrans;
+   // constraint local rotation as quaternion
+-  std::vector< Eigen3::Vector4d, Eigen3::aligned_allocator<Eigen3::Vector4d> > cqrot;
++  std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> > cqrot;
+   // constraint covariance
+-  std::vector< Eigen3::Matrix<double,6,6>, Eigen3::aligned_allocator<Eigen3::Matrix<double,6,6> > > cvar;
++  std::vector< Eigen::Matrix<double,6,6>, Eigen::aligned_allocator<Eigen::Matrix<double,6,6> > > cvar;
+   // tracks
+   std::vector<struct tinfo> tracks;
+ 
+diff --git a/sba/test/vis-mono.cpp b/sba/test/vis-mono.cpp
+index 8782ffc..28b79c7 100644
+--- a/sba/test/vis-mono.cpp
++++ b/sba/test/vis-mono.cpp
+@@ -49,7 +49,7 @@
+ #include <sys/time.h>
+ 
+ using namespace std;
+-using namespace Eigen3;
++using namespace Eigen;
+ using namespace sba;
+ using namespace frame_common;
+ 
+@@ -152,7 +152,7 @@ drawgraph(SysSPA &spa, ros::Publisher &cam_pub, ros::Publisher &link_pub)
+ // setup of precision matrices
+ //
+ 
+-static Eigen3::Matrix<double,6,6> n2prec, n2vprec, n2aprec, n2bprec, diagprec;
++static Eigen::Matrix<double,6,6> n2prec, n2vprec, n2aprec, n2bprec, diagprec;
+ 
+ 
+ void initPrecs()
+@@ -276,7 +276,7 @@ int main(int argc, char **argv)
+   Node::initDr();               // set up fixed jacobians
+   initPrecs();
+ 
+-  vector<Matrix<double,6,1>,Eigen3::aligned_allocator<Matrix<double,6,1> > > cps;
++  vector<Matrix<double,6,1>,Eigen::aligned_allocator<Matrix<double,6,1> > > cps;
+   double kfang = 5.0;
+   double kfrad = kfang*M_PI/180.0;
+ 

@@ -1,0 +1,10 @@
+<launch>
+  <!-- Before launching, must do 'roslaunch wg_pr2_2dnav pr2_2dnav.launch' -->
+
+  <node name="kidnapped_localization" pkg="kidnapped_robot" type="kidnapped_node" args="places.db $(find vocabulary_tree)/holidays.tree $(find vocabulary_tree)/holidays.weights $(find kidnapped_robot)/calonder.rtc" output="screen" cwd="node">
+    <remap from="mux" to="cmd_vel_mux" />
+    <remap from="stereo" to="wide_stereo" />
+    <remap from="map_pose" to="amcl_pose" />
+  </node>
+
+</launch>

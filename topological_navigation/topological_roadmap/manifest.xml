@@ -1,0 +1,22 @@
+<package>
+  <description brief="topological_roadmap">
+Defines a topological roadmap, which overlays a graph of waypoints over a topological graph as defined in the topological_map_2d package.
+  </description>
+  <author>Bhaskara Marthi</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/topological_roadmap</url>
+  <depend package="topological_nav_msgs"/>
+  <depend package="topological_map_2d"/>
+  <depend package="graph_mapping_utils"/>
+  <depend package="occupancy_grid_utils"/>
+  <depend package="mongo_ros"/>
+  <depend package="visualization_msgs"/>
+  <depend package="actionlib"/>
+  <depend package="navfn"/>
+  <depend package="costmap_2d"/>
+  <depend package="move_base_msgs"/>
+
+</package>
+
+

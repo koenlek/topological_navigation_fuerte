@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+rostopic pub -1 visualize_grid std_msgs/UInt64 $1

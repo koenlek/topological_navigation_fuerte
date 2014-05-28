@@ -1,0 +1,13 @@
+<launch>
+  <!-- For use with graph_mapping -->
+
+  <arg name="place_db_location" default="/tmp"/>
+
+  <node name="place_recognizer" pkg="kidnapped_robot" type="place_recognition_node" args="$(arg place_db_location)/places.db $(find vocabulary_tree)/holidays.tree $(find vocabulary_tree)/holidays.weights $(find kidnapped_robot)/calonder.rtc" output="screen" cwd="node">
+    <remap from="stereo" to="wide_stereo" />
+  </node>
+
+  <node name="stereo_proc" pkg="stereo_image_proc" type="stereo_image_proc" ns="wide_stereo" />
+        
+
+</launch>

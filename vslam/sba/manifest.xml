@@ -1,0 +1,23 @@
+<package>
+  <description>
+    Sparse bundle adjustment and Sparse pose adjustment.
+  </description>
+  <author>Kurt Konolige, Helen Oleynikova</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  
+  <depend package="roscpp"/>
+  <rosdep name="eigen"/>
+  <depend package="bpcg"/>
+  <depend package="std_msgs"/>
+  <depend package="visualization_msgs"/>
+  <depend package="geometry_msgs"/>
+  
+  <rosdep name="suitesparse"/>
+
+  <export>
+    <cpp cflags="`pkg-config --cflags eigen3` -DSBA_CHOLMOD -I${prefix}/include -I${prefix}/msg/cpp" lflags="-L${prefix}/lib -Wl,-rpath,${prefix}/lib -lsba -lsba_vis" />
+    <rosdoc config="rosdoc.yaml" />
+  </export>
+
+</package>

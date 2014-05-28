@@ -1,0 +1,20 @@
+<launch>
+  <!-- <machine name="robot" address="prk" user="eoleynikova" /> -->
+
+  <!-- Run stereo VSLAM on wide stereo data -->
+    <node name="ptcloud_vslam_node" pkg="vslam_system" type="ptcloud_vslam_node" args="$(find vocabulary_tree)/holidays.tree $(find vocabulary_tree)/holidays.weights $(find vslam_system)/data/calonder.rtc" output="screen" cwd="node" >
+      <remap from="/narrow_stereo/left/image_rect" to="/vslam/left/image_rect" />
+      <remap from="/narrow_stereo/right/image_rect" to="/vslam/right/image_rect" />
+      <remap from="/narrow_stereo/left/camera_info" to="/vslam/left/camera_info" />
+      <remap from="/narrow_stereo/right/camera_info" to="/vslam/right/camera_info" />
+      
+      <remap from="/narrow_stereo_textured/points2" to="/vslam/points2" />
+    </node>
+
+
+  <!-- Show VO tracks -->
+  <node name="vo_tracks_view" pkg="image_view" type="image_view">
+    <remap from="image" to="/vslam/vo_tracks/image" />
+  </node>
+
+</launch>

@@ -1,0 +1,16 @@
+<stack>
+  <description brief="topological_navigation">Code pertaining to navigation using a global topological graph together with local metric information</description>
+  <author>Maintained by Bhaskara Marthi</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/topological_navigation</url>
+  <depend stack="common" /> <!-- actionlib -->
+  <depend stack="common_msgs" /> <!-- nav_msgs, geometry_msgs, visualization_msgs -->
+  <depend stack="geometry" /> <!-- tf -->
+  <depend stack="graph_mapping" /> <!-- occupancy_grid_utils, laser_slam, graph_mapping_utils -->
+  <depend stack="navigation" /> <!-- move_base_msgs, navfn, costmap_2d -->
+  <depend stack="ros" />
+  <depend stack="ros_comm" /> <!-- roscpp -->
+  <depend stack="warehousewg" /> <!-- warehouse -->
+
+</stack>

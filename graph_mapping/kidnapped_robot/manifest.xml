@@ -1,0 +1,29 @@
+<package>
+  <description brief="kidnapped_robot">
+
+     kidnapped_robot
+
+  </description>
+  <author>Patrick Mihelich</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/kidnapped_robot</url>
+
+  <depend package="roscpp"/>
+  <depend package="vocabulary_tree"/>
+  <depend package="frame_common"/>
+
+  <depend package="posest"/>
+  <depend package="tf"/>
+  <depend package="geometry_msgs"/>
+  <depend package="pr2_controllers_msgs"/>
+  <depend package="actionlib"/>
+  <depend package="image_transport"/>
+  <depend package="image_geometry"/>
+  <depend package="cv_bridge"/>
+  <depend package="topic_tools"/>
+  <depend package="pcl"/> <!-- KL: maybe needed to fix a pcl common.h error...  -->
+
+  <!-- TODO exports -->
+
+</package>

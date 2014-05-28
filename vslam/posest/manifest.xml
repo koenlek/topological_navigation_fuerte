@@ -1,0 +1,20 @@
+<package>
+  <description>
+    Pose estimation from images and point clouds
+  </description>
+  <author>Kurt Konolige</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+
+  <rosdep name="opencv2"/>
+  <rosdep name="eigen"/>
+  <depend package="frame_common"/>
+  <depend package="sba"/>
+
+  <rosdep name="libtbb" />
+
+  <export>
+    <cpp cflags="-I${prefix}/include -I${prefix}/msg/cpp" lflags="-L${prefix}/lib -Wl,-rpath,${prefix}/lib -lposest -lpe_simulated" />
+  </export>
+
+</package>

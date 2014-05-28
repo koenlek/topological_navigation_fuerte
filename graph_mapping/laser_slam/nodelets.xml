@@ -1,0 +1,7 @@
+<library path="lib/liblaser_slam">
+  <class name="laser_slam/CloudCollectorROS" type="CloudCollectorROS" base_class_type="nodelet::Nodelet">
+    <description>
+      Collect a group of point clouds in a sensor frame into a fixed frame, and publish a combined point cloud.
+    </description>
+  </class>
+</library>

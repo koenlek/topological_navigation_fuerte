@@ -1,0 +1,16 @@
+<launch>
+
+  <!-- Run the graph slam system against a bag -->
+  <param name="/use_sim_time" value="true"/>
+  <node name="playback" pkg="rosbag" type="rosbag" args="play --clock $(find graph_slam)/test/wg-cafe.bag"/>
+  <include file="$(find graph_slam)/launch/simple_pose_graph.launch"/>
+
+  <!-- Test that localization is published at a reasonable rate -->
+  <param name="loc_hz_test/topic" value="current_node" />
+  <param name="loc_hz_test/hz" value="8"/>
+  <param name="loc_hz_test/hzerror" value="5.0"/>
+  <param name="loc_hz_test/test_duration" value="20"/>
+  <param name="loc_hz_test/wait_time" value="15"/>
+  <test test-name="loc_hz_test" pkg="rostest" type="hztest" name="loc_hz_test"/>
+
+</launch>

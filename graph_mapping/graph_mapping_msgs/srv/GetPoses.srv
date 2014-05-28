@@ -1,0 +1,16 @@
+# Service to ask the map server for a set of locally consistent
+# poses for a given set of nodes
+uint32[] nodes
+---
+uint8 error_code
+string error_msg
+
+# If error_code is SUCCESS, this will include the poses in the same order
+# as request.nodes
+geometry_msgs/Pose[] poses
+
+
+uint8 SUCCESS=0
+uint8 DISCONNECTED_NODES=1
+uint8 UNKNOWN_NODES=2
+uint8 EMPTY_NODE_SET=3
