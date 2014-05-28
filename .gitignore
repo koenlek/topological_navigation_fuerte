@@ -6,6 +6,8 @@ cmake_install.cmake
 !.gitignore
 
 setup.*
+holidays.weights
+holidays.tree
 
 srv_gen
 msg_gen

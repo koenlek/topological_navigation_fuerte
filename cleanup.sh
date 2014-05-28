@@ -8,6 +8,7 @@
 
 mv .gitignore gitignore_tmp
 mv .rosinstall rosinstall_tmp
+mv .git git_tmp
 
 find . -name '*~' | xargs rm -v
 find . -name 'cmake_install.cmake' | xargs rm -v
@@ -24,3 +25,5 @@ rm -r graph_mapping/laser_slam/data
 
 mv gitignore_tmp .gitignore
 mv rosinstall_tmp .rosinstall
+mv git_tmp .git
+

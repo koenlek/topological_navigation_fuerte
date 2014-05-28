@@ -79,8 +79,8 @@ From command line, do:
 
 Notes:
 
-- goal_id:id:/grid1 -> you put the sub map containing the topo goal here. You can ommit this, or find this map using rostopic echo tricks
-- goal:goal_node:1 -> put the topo roadmap node where you want to go here. You can find this node using RVIZ select
+- goal_id: id: /grid1 -> you put the sub map containing the topo goal here. You can ommit this, or find this map using rostopic echo tricks
+- goal: goal_node: 1 -> put the topo roadmap node where you want to go here. You can find this node using RVIZ select
 - Tip: you can use "select" in RVIZ to select nodes and figure out the number of this roadmap nodes!
 
 ECHO TOPIC MESSAGES
