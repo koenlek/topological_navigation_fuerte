@@ -24,12 +24,8 @@ Second: we will build the topological_navigation stack and its dependencies in r
 - `rosws init ~/fuerte_ws /opt/ros/fuerte`
 - `source ~/fuerte_ws/setup.bash` (and add it to your .bashrc for convenience)
 - `roscd`
-- `rosws set topological_navigation "https://github.com/koenlek/topological_navigation_fuerte/topological_navigation" --git`
-- `rosws set vslam "https://github.com/koenlek/topological_navigation_fuerte/vslam" --git`
-- `rosws set graph_mapping "https://github.com/koenlek/topological_navigation_fuerte/graph_mapping" --git`
-- `rosws update topological_navigation`
-- `rosws update vslam`
-- `rosws update graph_mapping`
+- `rosws set topological_navigation_fuerte "https://github.com/koenlek/topological_navigation_fuerte" --git`
+- `rosws update topological_navigation_fuerte`
 - `source ~/fuerte_ws/setup.bash`
 - `rosdep check topological_navigation`
 - `rosdep install topological_navigation` (I get a libtbb error, which I can ignore)
@@ -44,7 +40,7 @@ USAGE
 	roslaunch topological_roadmap move_base_topo_stage.launch
 
 - In case of such errors: bind() failed errno:98 Address already in use for socket: 0.0.0.0:27017
-  run "sudo service mongodb stop" before roslaunching...
+  run `sudo service mongodb stop` before roslaunching...
 - You can use RVIZ to send 2D Nav Goals, for some reason, these should be quite close to the robots (which is visualized by its footprint): otherwise nothing will happen.
 - You need to use the command line to send Topological Navigation Goals. See explanation below...
 - Using the RVIZ select tool, you can select nodes from the roadmap, which can help you pick a goal to send to /move_base_topo/goal
